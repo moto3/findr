@@ -32,4 +32,4 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 /tests/results/
 
 #SASS
-assets/css/.sass-cache
+assets/css/.sass-cache/*
