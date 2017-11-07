@@ -12,7 +12,9 @@ class Dashboard extends CI_Controller {
 	}
 	public function index()
 	{
+		flash_message('login_success');
 		$this->load->view('blocks/top');
+		$this->load->view('prompt');
 		$this->load->view('find');
 		$this->load->view('dashboard');
 		$this->load->view('items/add');

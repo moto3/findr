@@ -3,10 +3,7 @@ function prompt(){
 	$CI = & get_instance();
 	$message = $CI->session->flashdata('message');
     if( $message ){
-		$outstr  = '<div class="pure-u-1">';
-		$outstr .= '<div id="prompt" class="' . $message['class'] . '">' . $message['message'] . '</div>';
-		$outstr .= '</div>';
-		return $outstr;
+		return '<div id="prompt" class="' . $message['class'] . '">' . $message['message'] . '</div>';
 	}
 }
 function item(){

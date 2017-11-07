@@ -19,3 +19,15 @@
   opacity: 1;
   transform: translate3d(0, 0%, 0);
 }
+
+.slideAway-enter-active, .slideAway-leave-active {
+  transition: opacity 0.5s, transform 0.5s;
+}
+.slideAway-enter, .slideAway-leave-to {
+  opacity: 0;
+  transform: translate3d(0, -100%, 0);
+}
+.slideAway-enter-to, .slideAway-leave {
+  opacity: 1;
+  transform: translate3d(0, 0%, 0);
+}

@@ -1,6 +1,6 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
-?><div id="find">
+?><div id="find" v-if="isShown">
 	<div id="find-inner">
 		<div class="pure-g">
 			<div class="pure-u-21-24">

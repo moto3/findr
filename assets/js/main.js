@@ -1,9 +1,5 @@
-var prompt_timer = 2000;
+var prompt_timer = 3000;
 $(function(){
-
-	setTimeout(function(){
-		$("#prompt").slideUp();
-	}, prompt_timer);
 
 	$("#bottom-widget .btn-add").click(function(){
 		window.location = '/items/add';
@@ -41,9 +37,18 @@ $(function(){
       }
     }
   });
+
+  var find = new Vue({
+    el: '#find',
+    data: {
+      isShown: false
+    }
+  });
+
   var dashboard = new Vue({
     el: '#dashboard',
     data: {
+      isShown: false,
       ajaxData: [],
       hasItems: false
     },
@@ -62,12 +67,47 @@ $(function(){
       }
     },
     created: function () {
-      this.load_items();
+      //this.load_items();
     }
   });
 
+  var prompt = new Vue({
+    el: '#prompt-wrapper',
+    data: {
+      message: '',
+      isShown: false,
+      isError: false
+    },
+    methods: {
+      showMessage(arg_message){
+        this.message = arg_message;
+        this.isShown = true;
+        this.isError = false;
+        this.hideMessage();
+      },
+      showError(arg_message){
+        this.message = arg_message;
+        this.isShown = true;
+        this.isError = true;
+        this.hideMessage();
+      },
+      hideMessage(){
+        setTimeout(function(){
+          prompt.isShown = false;
+        }, prompt_timer);
+      }
+    },
+    created: function () {
+      //setTimeout(function(){
+        //prompt.showMessage('Vue Message 1');
+      //}, 1000);
+    }
+  });
   var bottom_widgets = new Vue({
     el: '#bottom-widgets',
+    data: {
+      isShown: false
+    },
     methods: {
       open_item_add() {
         modal.reset_form();
@@ -117,6 +157,7 @@ $(function(){
             .then(function (response) {
                 modal.close_modal();
                 dashboard.load_items();
+                prompt.showMessage('Item added successfully.');
             })
             .catch(function (error) {
                 console.log(error);
@@ -144,7 +185,19 @@ $(function(){
         modal.itemDescription = form_data.item_description;
       }
     }
+
+
+
   });
+  show_dashboard();
+  function show_dashboard(){
+    find.isShown = true;
+    dashboard.isShown = true;
+    bottom_widgets.isShown = true;
+    setTimeout(function(){
+      dashboard.load_items();
+    }, 1000);
+  }
   function toJSONString( form_id ) {
     var form = document.getElementById( form_id );
     var ret = '';
