@@ -10,114 +10,93 @@ class Items extends CI_Controller {
 			redirect('/users/login');
 		}
 	}
-	public function index()
-	{
-	}
+	public function index(){}
 	public function load()
 	{	
-		$data = $this->items_model->get_all();
+		$data = $this->items_model->get_all(array(
+      'items.user_id' => user_id()
+    ));
 		echo json_encode($data);
-	}
-	public function add()
-	{
-		$this->load->view('blocks/top');
-		$this->load->view('items/add');
-		$this->load->view('blocks/bottom');
 	}
 	public function save()
 	{
+    $data = array(
+      'storage_id' => $this->input->post('storage_id'),
+      'item_name' => $this->input->post('name'),
+      'item_description' => $this->input->post('description'),
+      'date_last_access' => date('Y-m-d H:i:s'),
+      'user_id' => user_id()
+    );
 
-		$storage_data = array(
-			'storage_prefix' => $this->input->post('prefix'),
-			'storage_number' => $this->input->post('number'),
-		);
-		$storage = $this->storage_spaces_model->get(
-			$storage_data	
-		);
-		if(empty($storage)){
-			$storage_data->date_created = date('Y-m-d H:i:s');
-			$storage_data->date_last_access = date('Y-m-d H:i:s');
-			$storage_id = $this->storage_spaces_model->insert($storage_data);
+		if($this->input->post('item_id') == 0){
+			$data['date_created'] = date('Y-m-d H:i:s');
+			$item_id = $this->items_model->insert($data);
 		}else{
-			$storage_id = $storage['storage_id'];
+      $item_id = $this->input->post('item_id');
+      if(!$this->items_model->belongs_to_user($item_id, user_id())){
+        die();
+      }
+			$this->items_model->update($data, array('item_id'=>$item_id));
 		}
 
-		if(empty($this->input->post('item_id'))){
-			$insert_data = array(
-				'storage_id' => $storage_id,
-				'item_name' => $this->input->post('name'),
-				'item_description' => $this->input->post('description'),
-				'date_created' => date('Y-m-d H:i:s'),
-				'date_last_access' => date('Y-m-d H:i:s')
-			);
-			$item_id = $this->items_model->insert($insert_data);
-		}else{
-			die('EDIT MODE');
-		}
-		$photos_submitted = explode(",", $this->input->post('uploaded_files'));
-		$photos_match = $this->photos_model->get_where_in('filename', $photos_submitted);
-		foreach($photos_match as $photo){
-			$this->photos_model->update(
-				array('item_id' => $item_id),
-				array('photo_id' => $photo['photo_id'])
-			);
-		}
-		$photos = $this->photos_model->get_where_in('filename', $photos_submitted);
+		$photo_ids = explode(",", $this->input->post('uploaded_files'));
+    if(!empty($photo_ids)){
+      $data = array('item_id' => $item_id);
+      $this->photos_model->update_batch($data, 'photoId', $photo_ids);
+    }
 
-		//flash_message('item_add_success');
-		//redirect('');
 	}
 	public function image_upload()
 	{
 		$upload_dir = $this->config->item('upload_directory') . user_id() . '/';
 		if(!file_exists($upload_dir)){
-        	mkdir($upload_dir, 0777, true);
-        }
-        $thumb_upload_dir = $upload_dir . $this->config->item('thumb_upload_directory');
-        if(!file_exists($thumb_upload_dir)){
-        	mkdir($thumb_upload_dir, 0777, true);
-        }
+      mkdir($upload_dir, 0777, true);
+    }
+    $thumb_upload_dir = $upload_dir . $this->config->item('thumb_upload_directory');
+    if(!file_exists($thumb_upload_dir)){
+      mkdir($thumb_upload_dir, 0777, true);
+    }
 
 		$config['upload_path']          = $upload_dir;
-        $config['allowed_types']        = 'gif|jpg|png';
-        $config['max_size']             = 10000;
-        $config['max_width']            = 20000;
-        $config['max_height']           = 20000;
+    $config['allowed_types']        = 'gif|jpg|png';
+    $config['max_size']             = 10000;
+    $config['max_width']            = 20000;
+    $config['max_height']           = 20000;
         $this->load->library('upload', $config);
 
-        $output = new stdClass();
-        if ( ! $this->upload->do_upload('files')){
-        	$output->error = $this->upload->display_errors('', '');
-        }else{
-
-        	$thumb_marker = '_thumb';
-        	$this->make_thumbnail($this->upload->upload_path.$this->upload->file_name, $thumb_upload_dir, $thumb_marker);
-            $data = $this->upload->data();
-
-            $item_id = $this->session->userdata('item_id');
-	        if(!$item_id){
-	        	$item_id = -1;
-	        }
-	        $photo_id = $this->photos_model->insert(
-	        	array(
-	        		'item_id' => $item_id,
-	        		'date_added' => date('Y-m-d H:i:s'),
-	        		'filename' => $data['file_name']
-	        	)
-	        );
+    $output = new stdClass();
+    if ( ! $this->upload->do_upload('files')){
+      $output->error = $this->upload->display_errors('', '');
+    }else{
+      $thumb_marker = '_thumb';
+      $this->make_thumbnail($this->upload->upload_path.$this->upload->file_name, $thumb_upload_dir, $thumb_marker);
+      $data = $this->upload->data();
+        
+      $item_id = $this->session->userdata('item_id');
+      if(!$item_id){
+	      $item_id = -1;
+	    }
+      $data['thumb_name'] = $data['raw_name'] . $thumb_marker . $data['file_ext']; //NOT AVAILABLE FROM CI UPLOAD LIB
+      $photo_id = $this->photos_model->insert(
+        array(
+          'item_id' => $item_id,
+          'date_added' => date('Y-m-d H:i:s'),
+          'fileName' => $data['file_name'],
+          'thumbName' => $data['thumb_name']
+        )
+      );
 
 			$file = new stdClass();
+      $file->photoId = $photo_id;
 			$file->url = $this->config->item('upload_url') . $data['raw_name'] . $data['file_ext'];
-	        $file->thumbnailUrl = $this->config->item('thumb_upload_url') . $data['raw_name'] . $thumb_marker . $data['file_ext'];
-	        $file->name = $data['file_name'];
-	        $file->type = $data['file_type'];
-	        $file->size = $data['file_size'];
-
-	        $output->files[] = $file;
-
-        }
-        echo json_encode($output);
-
+	    $file->thumbnailUrl = $this->config->item('thumb_upload_url') . $data['thumb_name'];
+	    $file->thumbName = $data['thumb_name'];
+      $file->fileName = $data['file_name'];
+	    $file->type = $data['file_type'];
+	    $file->size = $data['file_size'];
+	    $output->files[] = $file;
+    }
+    echo json_encode($output);
 	}
 
 	public function make_thumbnail($source_image, $thumb_dir, $thumb_marker){
@@ -133,7 +112,7 @@ class Items extends CI_Controller {
 
 	    if ( !$this->image_lib->resize()){
 	    	echo $this->image_lib->display_errors('', '');
-	        die();   
+        die();   
 	    }
 	}
 
