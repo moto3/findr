@@ -67,6 +67,9 @@ h2.header {
 	letter-spacing: 1.9em;
 	text-align:center;
 }
+.align-right {
+  float: right;
+}
 
 .splash-container {
     z-index: 1;
@@ -75,6 +78,7 @@ h2.header {
     height: 88%;
     top: 0;
     left: 0;
+    pointer-events:none;
 	.splash {
     	/* absolute center .splash within .splash-container */
     	width: 80%;
@@ -85,21 +89,55 @@ h2.header {
     	text-transform: uppercase;
 	}
 }
+
+$btn-num-icons: 7;
 .btn {
-	border:1px solid #ccc;
-	padding:0.5%;
-	margin:2px 	auto;
-	border-radius: 2px;
-	background:#fff;
-	background-repeat: no-repeat;
-	background-position:center left 10px;
-	cursor:pointer;
+  display: inline-block;
+  width:40px;
+  height:40px;
+  background-size:auto 100%;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  background-image:url(/assets/images/icons.png);
+  cursor: pointer;
+  &.sm {
+    width:24px;
+    height:24px;
+  }
+  &.pen {
+    background-position:0 0;
+  }
+  &.cog {
+    background-position:100%/$btn-num-icons 0;
+  }
+  &.check {
+    background-position:100%/$btn-num-icons*2 0;
+  }
+  &.x {
+    background-position:100%/$btn-num-icons*3 0;
+  }
+  &.plus {
+    background-position:100%/$btn-num-icons*4 0;
+  }
+  &.minus {
+    background-position:100%/$btn-num-icons*5 0;
+  }
+  &.reload {
+    background-position:100%/$btn-num-icons*6 0;
+  }
+  &.back {
+    background-position:100%/$btn-num-icons*7 0;
+  }
+  &.inactive {
+    opacity:0.5;
+  }
+
 }
 
 #prompt {
 	position: fixed;
 	border-bottom:1px solid #ccc;
-	z-index:9999;
+	z-index:99999;
 	padding:1%;
 	width:100%;
 	top:0;
@@ -123,6 +161,7 @@ h2.header {
 	-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
 	-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
+  pointer-events:auto;
 	label {
 		color:#666;
 		font-size:12px;
@@ -156,17 +195,20 @@ h2.header {
 		width:100%;
 		height:40px;
 		border:0;
+		background:#C00;
 	}
 	input[type=text] {
 		padding:0 1%;
 		border:1px solid #ccc;
 		width:100%;
 		background:rgba(255,255,255,0.8);
+		border-radius:4px 0 0 4px;
 	}
 	input[type=button] {
 		padding:0;
 		background:rgba(150,150,150,0.8) url(/assets/images/icon-magnifier.png) no-repeat center;
 		border:none;
+		border-radius:0 4px 4px 0;
 	}
 }
 #dashboard {
@@ -189,10 +231,15 @@ h2.header {
 	}
 }
 #search-result {
+  #items {
+    position: relative;
+  }
 	.item {
+    width:100%;
+    display: inline-block;
 		padding:0;
-		position: relative;
 		border-bottom:1px solid #ccc;
+    transition: all 0.8s;
 	} 
 	.photo {
 		background-image:url(/assets/images/icon-photo.png);
@@ -228,7 +275,11 @@ h2.header {
 	}
 }
 
-#item-add {
+#item-add, #item-storage {
+  position: absolute;
+  width:98%;
+  height:96%;
+  top:1%;
 	margin:1%;
 	.box {
 		padding:0.5%;
@@ -237,15 +288,22 @@ h2.header {
 		display: block;
 		width:100%;
 		font-size:1.2em;
-		padding:6px;
+		padding:0;
 		margin-top:10px;
 	}
+  label.first {
+    margin-top:0;
+  }
 	input[type=text], textarea, select {
 		display: block;
 		width:100%;
 		font-size:1.2em;
 		padding:6px;
 	}
+  input[type=text].error, textarea.error, select.error {
+    border:1px solid #c00;
+    background-color:#FFCCCC;
+  }
 	textarea {
 		border:1px solid #ccc;
 		height:180px;
@@ -262,6 +320,10 @@ h2.header {
 		padding:6px;
 		margin:20px 0 10px 0;
 	}
+  .message {
+    font-size:0.8em;
+    color:#c00;
+  }
 	.photo-preview {
 		display: inline-block;
 		width:60px;
@@ -275,16 +337,41 @@ h2.header {
 		width:100%;
 		padding:10px 0 10px 50px;
 		background-color:#CFC;
+    background-size:28px 28px;
 		background-image:url(/assets/images/icon-photo.png);
+    background-repeat: no-repeat;
+    background-position: 8px 8px;
 	}
 	.btn-photo.loading {
 		background-image:url(/assets/images/icon-loader.gif);
 	}
 }
 
+#storage-spaces {
+  border:1px solid #ccc;
+  padding:0;
+  margin: 0;
+  height:300px;
+  overflow-y:scroll;
+}
+.storage-space {
+  border-bottom:1px solid #ccc;
+  list-style-type: none;
+  padding:0.5%;
+  transition: all 0.8s;
+  h2, p {
+    margin:0;
+  }
+  &:hover, &.active {
+    background-color:rgba(0,0,100,1.0);
+    color:#fff;
+  }
+  cursor:pointer;
+}
+
 .modal {
 	position: fixed;
-	z-index:99999;
+	z-index:9999;
 	top:0;left:0;
 	width:100%;
 	height:100%;
@@ -295,6 +382,7 @@ h2.header {
 	position:fixed;
 	bottom:15px;
 	width:100%;
+  pointer-events:none;
 	.btn-add {
 		width:60px;
 		height:60px;
@@ -306,6 +394,7 @@ h2.header {
 		float:right;
 		margin:0 15px 0 0;
 		cursor:pointer;
+    pointer-events:auto;
 	}
 	.btn-add:after {
 		content: "+";

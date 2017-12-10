@@ -1,0 +1,56 @@
+{
+  "name": "findr_project",
+  "version": "1.0.0",
+  "description": "finds stuff you put away",
+  "main": "webpack.config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "start": "webpack-dev-server --inline --hot"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moto3/findr.git"
+  },
+  "author": "Moto Hayashi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moto3/findr/issues"
+  },
+  "homepage": "https://github.com/moto3/findr#readme",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.0.2",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-runtime": "^6.26.0",
+    "css-loader": "^0.28.7",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "inline-source-map": "^0.6.2",
+    "node-sass": "^4.6.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.0",
+    "uglifyjs-webpack-plugin": "^1.0.1",
+    "vue-hot-reload-api": "^2.2.0",
+    "vue-html-loader": "^1.2.4",
+    "vue-loader": "^13.5.0",
+    "vue-template-compiler": "^2.5.3",
+    "webpack": "^3.8.1",
+    "webpack-dev-server": "^2.9.4"
+  },
+  "dependencies": {
+    "axios": "^0.17.0",
+    "simple-vue-validator": "^0.14.1",
+    "vue": "^2.5.3",
+    "vue-i18n": "^7.3.2",
+    "vuex": "^3.0.1"
+  },
+  "babel": {
+    "plugins": [
+      "transform-object-rest-spread"
+    ]
+  }
+}

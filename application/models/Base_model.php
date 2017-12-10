@@ -97,6 +97,11 @@ class base_model extends CI_Model {
         $this->db->update($this->table_name, $update_data);
         return true;
     }
+    function update_batch($update_data = array(), $where_key, $where_values){
+        $this->db->where_in($where_key, $where_values);
+        $this->db->update($this->table_name, $update_data);
+        return true;
+    }
     function delete($where = array()){
         $this->db->delete($this->table_name, $where); 
     }
@@ -123,6 +128,15 @@ class base_model extends CI_Model {
             exit();
         }
     }
+    function belongs_to_user($id, $user_id, $user_key = 'user_id'){
+      $this->db->where(array(
+        $this->primary_key => $id,
+        $user_key => $user_id
+      ));
+      $query = $this->db->get($this->table_name);
+      return $query->num_rows() > 0;
+    }
+
 
     function form_select($label_key, $value = 0, $name = '', $where = array(), $select = "*", $limit = 0, $order_by = '', $default_label = 'select'){
         if($name == ''){

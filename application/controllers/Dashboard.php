@@ -7,18 +7,18 @@ class Dashboard extends CI_Controller {
 	{
 		parent::__construct();
 		if(!is_logged_in()){
-			redirect('/users/login');
+			//redirect('/users/login');
 		}
 	}
 	public function index()
 	{
-		flash_message('login_success');
+		//flash_message('login_success');
 		$this->load->view('blocks/top');
-		$this->load->view('prompt');
-		$this->load->view('find');
+		//$this->load->view('prompt');
+		//$this->load->view('find');
 		$this->load->view('dashboard');
-		$this->load->view('items/add');
-		$this->load->view('bottom-widgets');
+		//$this->load->view('items/add');
+		//$this->load->view('bottom-widgets');
 		$this->load->view('blocks/bottom');
 	}
 }
