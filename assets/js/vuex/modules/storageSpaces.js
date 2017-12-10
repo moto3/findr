@@ -21,8 +21,8 @@ const actions = {
     store.commit('SET_ACTIVE_STORAGE', storage);
   },
   add_new_storage (store, storage) {
-    store.dispatch('show_storage_form');
     store.commit('ADD_STORAGE');
+    store.dispatch('show_storage_form');   
   },
   edit_storage (store) {
     if(store.state.active.storage_id){
@@ -59,7 +59,6 @@ const actions = {
           var prompt_data = {message:response.data.message, error:true};
         }
         store.dispatch('set_prompt', prompt_data);
-        
       })
       .catch(function (error) {
         console.log(error);
@@ -73,6 +72,12 @@ const mutations = {
   },
   SET_ACTIVE_STORAGE(state, storage) {
     state.active = storage;
+  },
+  UPDATE_ACTIVE_STORAGE_PREFIX(state, storage_prefix) {
+    state.active.storage_prefix = storage_prefix;
+  },
+  UPDATE_ACTIVE_STORAGE_NUMBER(state, storage_number) {
+    state.active.storage_number = storage_number;
   },
   UPDATE_ACTIVE_STORAGE_NAME(state, storage_name) {
     state.active.storage_name = storage_name;

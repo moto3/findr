@@ -61,7 +61,6 @@ const actions = {
     });
   },
   item_form_submit (store, input) {
-    console.log('submit')
     axios.post('/items/save', input)
     .then(function (response) {
       store.dispatch('load_items', store);

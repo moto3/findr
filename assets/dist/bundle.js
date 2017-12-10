@@ -11351,10 +11351,19 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
   return Vue$3;
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(22).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(22).setImmediate))
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(26);
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11383,7 +11392,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11409,7 +11418,7 @@ var alphabets = exports.alphabets = function alphabets() {
 };
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11437,15 +11446,6 @@ try {
 // easier to handle this case. if(!global) { ...}
 
 module.exports = g;
-
-/***/ }),
-/* 9 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = __webpack_require__(26);
 
 /***/ }),
 /* 10 */
@@ -13290,7 +13290,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 });
 
 //# sourceMappingURL=es6-promise.map
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(8)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(9)))
 
 /***/ }),
 /* 19 */
@@ -13587,7 +13587,13 @@ var _app = __webpack_require__(47);
 
 var _app2 = _interopRequireDefault(_app);
 
+var _simpleVueValidator = __webpack_require__(16);
+
+var _simpleVueValidator2 = _interopRequireDefault(_simpleVueValidator);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_vue2.default.use(_simpleVueValidator2.default);
 
 new _vue2.default({
   store: _store2.default,
@@ -13849,7 +13855,7 @@ exports.clearImmediate = clearImmediate;
     attachTo.setImmediate = setImmediate;
     attachTo.clearImmediate = clearImmediate;
 })(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(3)))
 
 /***/ }),
 /* 24 */
@@ -13974,7 +13980,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.close_storage_form = exports.show_storage_form = exports.close_storage_list = exports.show_storage_list = exports.show_item_form = exports.set_form_mode = exports.open_form = exports.close_form = exports.find_item_func = exports.find_item_evoke = exports.find_item = exports.set_prompt = exports.login = exports.check_login = undefined;
 
-var _axios = __webpack_require__(9);
+var _axios = __webpack_require__(6);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -14962,7 +14968,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(9);
+var _axios = __webpack_require__(6);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -15027,7 +15033,6 @@ var actions = {
     });
   },
   item_form_submit: function item_form_submit(store, input) {
-    console.log('submit');
     _axios2.default.post('/items/save', input).then(function (response) {
       store.dispatch('load_items', store);
       store.dispatch('close_form', store);
@@ -15104,7 +15109,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(9);
+var _axios = __webpack_require__(6);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -15131,8 +15136,8 @@ var actions = {
     store.commit('SET_ACTIVE_STORAGE', storage);
   },
   add_new_storage: function add_new_storage(store, storage) {
-    store.dispatch('show_storage_form');
     store.commit('ADD_STORAGE');
+    store.dispatch('show_storage_form');
   },
   edit_storage: function edit_storage(store) {
     if (store.state.active.storage_id) {
@@ -15178,6 +15183,12 @@ var mutations = {
   },
   SET_ACTIVE_STORAGE: function SET_ACTIVE_STORAGE(state, storage) {
     state.active = storage;
+  },
+  UPDATE_ACTIVE_STORAGE_PREFIX: function UPDATE_ACTIVE_STORAGE_PREFIX(state, storage_prefix) {
+    state.active.storage_prefix = storage_prefix;
+  },
+  UPDATE_ACTIVE_STORAGE_NUMBER: function UPDATE_ACTIVE_STORAGE_NUMBER(state, storage_number) {
+    state.active.storage_number = storage_number;
   },
   UPDATE_ACTIVE_STORAGE_NAME: function UPDATE_ACTIVE_STORAGE_NAME(state, storage_name) {
     state.active.storage_name = storage_name;
@@ -15353,11 +15364,11 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_axios__);
 //
 //
@@ -16216,7 +16227,7 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_constants_constants__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_constants_constants__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_constants_constants__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuex__);
@@ -16316,17 +16327,15 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__photo_preview_vue__ = __webpack_require__(71);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_simple_vue_validator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuex__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__photo_preview_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_simple_vue_validator__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -16383,13 +16392,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
-
-var Validator = __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default.a.Validator;
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default.a);
+var Validator = __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default.a.Validator;
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  mixins: [__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default.a],
-  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapState"])({
+  mixins: [__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default.a],
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapState"])({
     showItemForm: state => state.form.itemFormShown,
     storageSpacesAll: state => state.storageSpaces.all,
     photoPreviews: state => state.items.active.photos,
@@ -16409,7 +16416,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_simp
         return [];
       }
     }
-  }), Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapGetters"])([]), {
+  }), Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapGetters"])([]), {
     storage_id: {
       get() {
         return this.$store.state.items.active.storage_id;
@@ -16440,7 +16447,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_simp
       return Validator.value(value).required();
     }
   },
-  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapActions"])(['show_storage_list', 'upload_image', 'item_form_submit', 'close_form']), {
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['show_storage_list', 'upload_image', 'item_form_submit', 'close_form']), {
     form_validate: function () {
       var parent = this;
       this.$validate().then(function (success) {
@@ -16451,7 +16458,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_simp
     }
   }),
   components: {
-    PhotoPreview: __WEBPACK_IMPORTED_MODULE_4__photo_preview_vue__["a" /* default */]
+    PhotoPreview: __WEBPACK_IMPORTED_MODULE_3__photo_preview_vue__["a" /* default */]
   }
 });
 
@@ -17289,14 +17296,12 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuex__);
-//
-//
 //
 //
 //
@@ -17341,7 +17346,6 @@ if (false) {(function () {
     storageSpacesAll: state => state.storageSpaces.all,
     activeStorage: state => state.storageSpaces.active,
     activeStorageSelected: state => state.storageSpaces.active.storage_id,
-
     storageListTransition: state => {
       if (state.form.form_mode == 'storageForm') {
         return 'slideLeft';
@@ -17351,10 +17355,7 @@ if (false) {(function () {
     }
 
   }),
-  methods: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['set_active_storage', 'add_new_storage', 'edit_storage', 'storage_submit', 'close_storage_list', 'delete_storage']),
-  created: function () {
-    console.log(this.$store.state.storageSpaces);
-  }
+  methods: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['set_active_storage', 'add_new_storage', 'edit_storage', 'storage_submit', 'close_storage_list', 'delete_storage'])
 });
 
 /***/ }),
@@ -17370,97 +17371,77 @@ var render = function() {
     _vm.showStorageList
       ? _c("div", { staticClass: "pure-g", attrs: { id: "item-storage" } }, [
           _c("div", { staticClass: "box" }, [
+            _c("div", { staticClass: "pure-u-5-5" }, [
+              _c("div", {
+                staticClass: "btn back align-right",
+                on: { click: _vm.close_storage_list }
+              })
+            ]),
+            _vm._v(" "),
             _c(
-              "form",
-              {
-                attrs: { id: "storage-list" },
-                on: {
-                  submit: function($event) {
-                    $event.preventDefault()
-                    _vm.storage_submit(_vm.formToString("storage-form"))
-                  }
-                }
-              },
+              "div",
+              { staticClass: "pure-u-5-5" },
               [
-                _c("div", { staticClass: "pure-u-5-5" }, [
-                  _c("div", {
-                    staticClass: "btn back align-right",
-                    on: { click: _vm.close_storage_list }
-                  })
+                _c("label", { staticClass: "first", attrs: { for: "name" } }, [
+                  _vm._v("Storage Spaces")
                 ]),
                 _vm._v(" "),
                 _c(
-                  "div",
-                  { staticClass: "pure-u-5-5" },
-                  [
-                    _c(
-                      "label",
-                      { staticClass: "first", attrs: { for: "name" } },
-                      [_vm._v("Storage Spaces")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "transition-group",
+                  "transition-group",
+                  {
+                    attrs: { tag: "ul", id: "storage-spaces", name: "listmove" }
+                  },
+                  _vm._l(_vm.storageSpacesAll, function(storage) {
+                    return _c(
+                      "li",
                       {
-                        attrs: {
-                          tag: "ul",
-                          id: "storage-spaces",
-                          name: "listmove"
+                        key: storage.storage_id,
+                        staticClass: "storage-space",
+                        class: { active: storage === _vm.activeStorage },
+                        attrs: { storage: storage },
+                        on: {
+                          click: function($event) {
+                            _vm.set_active_storage(storage)
+                          }
                         }
                       },
-                      _vm._l(_vm.storageSpacesAll, function(storage) {
-                        return _c(
-                          "li",
-                          {
-                            key: storage.storage_id,
-                            staticClass: "storage-space",
-                            class: { active: storage === _vm.activeStorage },
-                            attrs: { storage: storage },
-                            on: {
-                              click: function($event) {
-                                _vm.set_active_storage(storage)
-                              }
-                            }
-                          },
-                          [
-                            _c("strong", [
-                              _vm._v(
-                                _vm._s(storage.storage_prefix) +
-                                  _vm._s(storage.storage_number) +
-                                  ": " +
-                                  _vm._s(storage.storage_name)
-                              )
-                            ]),
-                            _vm._v(
-                              "\n                  " +
-                                _vm._s(storage.storage_description) +
-                                "\n              "
-                            )
-                          ]
+                      [
+                        _c("strong", [
+                          _vm._v(
+                            _vm._s(storage.storage_prefix) +
+                              _vm._s(storage.storage_number) +
+                              ": " +
+                              _vm._s(storage.storage_name)
+                          )
+                        ]),
+                        _vm._v(
+                          "\n                  " +
+                            _vm._s(storage.storage_description) +
+                            "\n            "
                         )
-                      })
-                    ),
-                    _vm._v(" "),
-                    _c("div", {
-                      staticClass: "btn sm plus align-right",
-                      on: { click: _vm.add_new_storage }
-                    }),
-                    _vm._v(" "),
-                    _c("div", {
-                      staticClass: "btn sm minus align-right",
-                      class: { inactive: !_vm.activeStorageSelected },
-                      on: { click: _vm.delete_storage }
-                    }),
-                    _vm._v(" "),
-                    _c("div", {
-                      staticClass: "btn sm pen align-right",
-                      class: { inactive: !_vm.activeStorageSelected },
-                      on: { click: _vm.edit_storage }
-                    })
-                  ],
-                  1
-                )
-              ]
+                      ]
+                    )
+                  })
+                ),
+                _vm._v(" "),
+                _c("div", {
+                  staticClass: "btn sm plus align-right",
+                  on: { click: _vm.add_new_storage }
+                }),
+                _vm._v(" "),
+                _c("div", {
+                  staticClass: "btn sm minus align-right",
+                  class: { inactive: !_vm.activeStorageSelected },
+                  on: { click: _vm.delete_storage }
+                }),
+                _vm._v(" "),
+                _c("div", {
+                  staticClass: "btn sm pen align-right",
+                  class: { inactive: !_vm.activeStorageSelected },
+                  on: { click: _vm.edit_storage }
+                })
+              ],
+              1
             )
           ])
         ])
@@ -17534,16 +17515,14 @@ if (false) {(function () {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator__ = __webpack_require__(16);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_simple_vue_validator__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuex__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_simple_vue_validator__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_simple_vue_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_simple_vue_validator__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -17602,29 +17581,42 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 
 
-
-var Validator = __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default.a.Validator;
-__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default.a);
+var Validator = __WEBPACK_IMPORTED_MODULE_3_simple_vue_validator___default.a.Validator;
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  mixins: [__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default.a],
+  mixins: [__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default.a],
   data: function () {
     return {
-      alphabets: Object(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__["alphabets"])(),
-      numbers: Object(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__["numbers"])()
+      alphabets: Object(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__["alphabets"])(),
+      numbers: Object(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__["numbers"])()
     };
   },
-  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapState"])({
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapState"])({
     showStorageForm: state => state.form.storageFormShown,
 
     storageId: state => state.storageSpaces.active.storage_id,
-    storagePrefix: state => state.storageSpaces.active.storage_prefix,
-    storageNumber: state => state.storageSpaces.active.storage_number,
+
     storageDescription: state => state.storageSpaces.active.storage_description,
 
     activeStorage: state => state.storageSpaces.active,
     activeStorageSelected: state => !(state.storageSpaces.active.storage_id === 0)
   }), {
+    storagePrefix: {
+      get() {
+        return this.$store.state.storageSpaces.active.storage_prefix;
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_STORAGE_PREFIX', value);
+      }
+    },
+    storageNumber: {
+      get() {
+        return this.$store.state.storageSpaces.active.storage_number;
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_STORAGE_NUMBER', value);
+      }
+    },
     storageName: {
       get() {
         return this.$store.state.storageSpaces.active.storage_name;
@@ -17639,7 +17631,7 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4_simp
       return Validator.value(value).required();
     }
   },
-  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapActions"])(['save_storage', 'close_storage_form']), {
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['save_storage', 'close_storage_form']), {
     form_validate: function () {
       var parent = this;
       this.$validate().then(function (success) {
@@ -17691,8 +17683,30 @@ var render = function() {
                   _c(
                     "select",
                     {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.storagePrefix,
+                          expression: "storagePrefix"
+                        }
+                      ],
                       attrs: { id: "prefix", name: "prefix" },
-                      domProps: { value: _vm.storagePrefix }
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.storagePrefix = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
                     },
                     _vm._l(_vm.alphabets, function(alphabet) {
                       return _c(
@@ -17714,8 +17728,30 @@ var render = function() {
                   _c(
                     "select",
                     {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.storageNumber,
+                          expression: "storageNumber"
+                        }
+                      ],
                       attrs: { id: "number", name: "number" },
-                      domProps: { value: _vm.storageNumber }
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.storageNumber = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
                     },
                     _vm._l(_vm.numbers, function(number) {
                       return _c(

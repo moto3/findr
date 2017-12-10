@@ -13,7 +13,7 @@
               </div>
 
               <div class="pure-u-1-5">
-                <select id="prefix" name="prefix" :value="storagePrefix">
+                <select id="prefix" name="prefix" v-model="storagePrefix">
                   <option v-for="alphabet in alphabets" :value="alphabet.value">
                     {{ alphabet.letter }}
                   </option>
@@ -21,7 +21,7 @@
               </div>
 
               <div class="pure-u-4-5">
-                <select id="number" name="number" :value="storageNumber">
+                <select id="number" name="number" v-model="storageNumber">
                   <option v-for="number in numbers" :value="number.value">
                     {{ number.digit }}
                   </option>
@@ -49,14 +49,12 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import formToString from '../../vue-mixins/functions';
 import {numbers, alphabets} from '../../vue-constants/constants';
 import {mapState, mapActions} from 'vuex';
 
 import SimpleVueValidation from 'simple-vue-validator';
 var Validator = SimpleVueValidation.Validator;
-Vue.use(SimpleVueValidation);
 
 export default {
   mixins: [ formToString ],
@@ -71,13 +69,29 @@ export default {
       showStorageForm: state => state.form.storageFormShown,
 
       storageId: state => state.storageSpaces.active.storage_id,
-      storagePrefix: state => state.storageSpaces.active.storage_prefix,
-      storageNumber: state => state.storageSpaces.active.storage_number,
+      
+      
       storageDescription: state => state.storageSpaces.active.storage_description,
 
       activeStorage: state => state.storageSpaces.active,
       activeStorageSelected: state => !(state.storageSpaces.active.storage_id === 0)
     }),
+    storagePrefix: {
+      get() {
+        return this.$store.state.storageSpaces.active.storage_prefix
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_STORAGE_PREFIX', value)
+      }
+    },
+    storageNumber: {
+      get() {
+        return this.$store.state.storageSpaces.active.storage_number
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_STORAGE_NUMBER', value)
+      }
+    },    
     storageName: {
       get() {
         return this.$store.state.storageSpaces.active.storage_name

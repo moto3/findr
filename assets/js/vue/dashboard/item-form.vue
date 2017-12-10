@@ -46,7 +46,6 @@
 </template>
 
 <script>
-import Vue from 'vue';
 import formToString from '../../vue-mixins/functions';
 import {numbers, alphabets} from '../../vue-constants/constants';
 import {mapGetters, mapState, mapActions} from 'vuex';
@@ -54,7 +53,6 @@ import PhotoPreview from './photo-preview.vue';
 
 import SimpleVueValidation from 'simple-vue-validator';
 var Validator = SimpleVueValidation.Validator;
-Vue.use(SimpleVueValidation);
 
 export default {
   mixins: [ formToString ],

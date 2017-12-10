@@ -2,26 +2,24 @@
   <transition v-bind:name="storageListTransition" >
     <div id="item-storage" class="pure-g" v-if="showStorageList">
         <div class="box">
-          <form id="storage-list" v-on:submit.prevent="storage_submit(formToString('storage-form'))">
               
-            <div class="pure-u-5-5">
-              <div class="btn back align-right" v-on:click="close_storage_list"></div>
-            </div>
+          <div class="pure-u-5-5">
+            <div class="btn back align-right" v-on:click="close_storage_list"></div>
+          </div>
 
-            <div class="pure-u-5-5">
-              <label for="name" class="first">Storage Spaces</label>
-              <transition-group tag="ul" id="storage-spaces" name="listmove">
-                <li class="storage-space" v-for="storage in storageSpacesAll" v-bind:storage="storage" v-bind:key="storage.storage_id" @click="set_active_storage(storage)" :class="{active: storage === activeStorage}" >
+          <div class="pure-u-5-5">
+            <label for="name" class="first">Storage Spaces</label>
+            <transition-group tag="ul" id="storage-spaces" name="listmove">
+              <li class="storage-space" v-for="storage in storageSpacesAll" v-bind:storage="storage" v-bind:key="storage.storage_id" @click="set_active_storage(storage)" :class="{active: storage === activeStorage}" >
                     <strong>{{storage.storage_prefix}}{{storage.storage_number}}: {{storage.storage_name}}</strong>
                     {{storage.storage_description}}
-                </li>
-              </transition-group>
-              <div class="btn sm plus align-right" v-on:click="add_new_storage"></div>
-              <div class="btn sm minus align-right" :class="{inactive: !activeStorageSelected}" @click="delete_storage"></div>
-              <div class="btn sm pen align-right" :class="{inactive: !activeStorageSelected}" v-on:click="edit_storage"></div>
-            </div>
+              </li>
+            </transition-group>
+            <div class="btn sm plus align-right" v-on:click="add_new_storage"></div>
+            <div class="btn sm minus align-right" :class="{inactive: !activeStorageSelected}" @click="delete_storage"></div>
+            <div class="btn sm pen align-right" :class="{inactive: !activeStorageSelected}" v-on:click="edit_storage"></div>
+          </div>
 
-          </form>
         </div> 
     </div>
   </transition>
@@ -44,7 +42,6 @@ export default {
     storageSpacesAll: state => state.storageSpaces.all,
     activeStorage: state => state.storageSpaces.active,
     activeStorageSelected: state => state.storageSpaces.active.storage_id,
-
     storageListTransition: state => {
       if(state.form.form_mode == 'storageForm'){
         return 'slideLeft'
@@ -62,9 +59,6 @@ export default {
       'storage_submit',
       'close_storage_list',
       'delete_storage'
-    ]),
-  created: function(){
-    console.log(this.$store.state.storageSpaces);
-  }
+    ])
 }
 </script>
