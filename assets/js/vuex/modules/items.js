@@ -7,7 +7,7 @@ const state = {
 }
 
 const actions = {
-  load_items ({commit}) {
+  load_items (store) {
     axios.post('/items/load')
     .then(function (response) {
       if(response.data.length > 0){
@@ -16,7 +16,8 @@ const actions = {
           return obj;
         });
         console.log(response.data);
-        commit('LOAD_ITEMS', response.data);
+        store.commit('LOAD_ITEMS', response.data);
+        store.dispatch('find_item_evoke');
       }
     })
     .catch(function (error) {
@@ -38,7 +39,7 @@ const actions = {
     store.commit('SET_ACTIVE_ITEM', item);
     store.dispatch('open_form', store);
   },
-  upload_image ({commit}) {
+  upload_image (store) {
     var data = new FormData();
     data.append('files', document.getElementById('fileupload').files[0]);
     axios.post('/items/image_upload', data, {
@@ -51,17 +52,22 @@ const actions = {
       photoPreview.photoId = response.data.files[0].photoId;
       photoPreview.fileName = response.data.files[0].fileName;
       photoPreview.thumbName = response.data.files[0].thumbName;
-      commit('ADD_ACTIVE_ITEM_PHOTO', photoPreview);
+      store.commit('ADD_ACTIVE_ITEM_PHOTO', photoPreview);
+      var prompt_data = {message:'Image uploaded successfully.', error:false};
+      store.dispatch('set_prompt', prompt_data);
     })
-    .catch(function (err) {
+    .catch(function (error) {
       console.log(error)
     });
   },
   item_form_submit (store, input) {
+    console.log('submit')
     axios.post('/items/save', input)
     .then(function (response) {
       store.dispatch('load_items', store);
       store.dispatch('close_form', store);
+      var prompt_data = {message:'Item saved successfully.', error:false};
+      store.dispatch('set_prompt', prompt_data);
     })
     .catch(function (error) {
       console.log(error);
@@ -70,7 +76,6 @@ const actions = {
 }
 
 const mutations = {
-  //ITEMS
   LOAD_ITEMS (state, items) {
     state.all = items;
   },
@@ -94,8 +99,17 @@ const mutations = {
     state.active = empty_item
   },
   ADD_ACTIVE_ITEM_PHOTO (state, photo) {
-    state.active.photos.push(photo);
+    state.active.photos.push(photo)
   },
+  UPDATE_ACTIVE_STORAGE_ID (state, value) {
+    state.active.storage_id = value
+  },
+  UPDATE_ACTIVE_ITEM_NAME (state, value ) {
+    state.active.item_name = value
+  },
+  UPDATE_ACTIVE_ITEM_DESCRIPTION (state, value ) {
+    state.active.item_description = value
+  }
 }
 
 const getters = {

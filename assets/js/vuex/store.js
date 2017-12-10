@@ -18,6 +18,7 @@ const state = {
   form: {
     shown: false,
     itemFormShown: false,
+    storageListShown: false,
     storageFormShown: false,
     form_mode: 'none'
   },
@@ -49,6 +50,9 @@ const mutations = {
   },
   SET_ITEM_FORM_SHOWN (state, isShown) {
     state.form.itemFormShown = isShown;
+  },
+  SET_STORAGE_LIST_SHOWN (state, isShown) {
+    state.form.storageListShown = isShown;
   },
   SET_STORAGE_FORM_SHOWN (state, isShown) {
     state.form.storageFormShown = isShown;

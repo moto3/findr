@@ -21,12 +21,45 @@ const actions = {
     store.commit('SET_ACTIVE_STORAGE', storage);
   },
   add_new_storage (store, storage) {
+    store.dispatch('show_storage_form');
     store.commit('ADD_STORAGE');
   },
-  storage_submit (store, input) {
+  edit_storage (store) {
+    if(store.state.active.storage_id){
+      store.dispatch('show_storage_form');
+    }
+  },
+  delete_storage (store) {
+    if(store.state.active.storage_id){
+      var r = confirm("Are you sure?");
+      if (r == true) {
+        var input = 'storage_id=' + store.state.active.storage_id;
+        axios.post('/storage/delete', input)
+          .then(function (response) {
+            if(response.data.success){
+              store.dispatch('load_storage', store); 
+            }
+            var prompt_data = {message:response.data.message, error:!response.data.success}
+            store.dispatch('set_prompt', prompt_data);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      }
+    }
+  },
+  save_storage (store, input) {
     axios.post('/storage/save', input)
       .then(function (response) {
-        store.dispatch('load_storage', store);
+        if(response.data.success){
+          var prompt_data = {message:'Storage saved successfully.', error:false};
+          store.dispatch('load_storage', store);
+          store.dispatch('close_storage_form', store);
+        }else{
+          var prompt_data = {message:response.data.message, error:true};
+        }
+        store.dispatch('set_prompt', prompt_data);
+        
       })
       .catch(function (error) {
         console.log(error);
@@ -40,6 +73,9 @@ const mutations = {
   },
   SET_ACTIVE_STORAGE(state, storage) {
     state.active = storage;
+  },
+  UPDATE_ACTIVE_STORAGE_NAME(state, storage_name) {
+    state.active.storage_name = storage_name;
   },
   ADD_STORAGE (state) {
     const empty_storage = {

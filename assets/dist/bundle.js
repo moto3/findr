@@ -60,428 +60,11 @@
 /******/ 	__webpack_require__.p = "assets/dist/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 15);
+/******/ 	return __webpack_require__(__webpack_require__.s = 20);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var bind = __webpack_require__(10);
-var isBuffer = __webpack_require__(22);
-
-/*global toString:true*/
-
-// utils is a library of generic helper functions non-specific to axios
-
-var toString = Object.prototype.toString;
-
-/**
- * Determine if a value is an Array
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an Array, otherwise false
- */
-function isArray(val) {
-  return toString.call(val) === '[object Array]';
-}
-
-/**
- * Determine if a value is an ArrayBuffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an ArrayBuffer, otherwise false
- */
-function isArrayBuffer(val) {
-  return toString.call(val) === '[object ArrayBuffer]';
-}
-
-/**
- * Determine if a value is a FormData
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an FormData, otherwise false
- */
-function isFormData(val) {
-  return typeof FormData !== 'undefined' && val instanceof FormData;
-}
-
-/**
- * Determine if a value is a view on an ArrayBuffer
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
- */
-function isArrayBufferView(val) {
-  var result;
-  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
-    result = ArrayBuffer.isView(val);
-  } else {
-    result = val && val.buffer && val.buffer instanceof ArrayBuffer;
-  }
-  return result;
-}
-
-/**
- * Determine if a value is a String
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a String, otherwise false
- */
-function isString(val) {
-  return typeof val === 'string';
-}
-
-/**
- * Determine if a value is a Number
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Number, otherwise false
- */
-function isNumber(val) {
-  return typeof val === 'number';
-}
-
-/**
- * Determine if a value is undefined
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if the value is undefined, otherwise false
- */
-function isUndefined(val) {
-  return typeof val === 'undefined';
-}
-
-/**
- * Determine if a value is an Object
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is an Object, otherwise false
- */
-function isObject(val) {
-  return val !== null && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object';
-}
-
-/**
- * Determine if a value is a Date
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Date, otherwise false
- */
-function isDate(val) {
-  return toString.call(val) === '[object Date]';
-}
-
-/**
- * Determine if a value is a File
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a File, otherwise false
- */
-function isFile(val) {
-  return toString.call(val) === '[object File]';
-}
-
-/**
- * Determine if a value is a Blob
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Blob, otherwise false
- */
-function isBlob(val) {
-  return toString.call(val) === '[object Blob]';
-}
-
-/**
- * Determine if a value is a Function
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Function, otherwise false
- */
-function isFunction(val) {
-  return toString.call(val) === '[object Function]';
-}
-
-/**
- * Determine if a value is a Stream
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a Stream, otherwise false
- */
-function isStream(val) {
-  return isObject(val) && isFunction(val.pipe);
-}
-
-/**
- * Determine if a value is a URLSearchParams object
- *
- * @param {Object} val The value to test
- * @returns {boolean} True if value is a URLSearchParams object, otherwise false
- */
-function isURLSearchParams(val) {
-  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
-}
-
-/**
- * Trim excess whitespace off the beginning and end of a string
- *
- * @param {String} str The String to trim
- * @returns {String} The String freed of excess whitespace
- */
-function trim(str) {
-  return str.replace(/^\s*/, '').replace(/\s*$/, '');
-}
-
-/**
- * Determine if we're running in a standard browser environment
- *
- * This allows axios to run in a web worker, and react-native.
- * Both environments support XMLHttpRequest, but not fully standard globals.
- *
- * web workers:
- *  typeof window -> undefined
- *  typeof document -> undefined
- *
- * react-native:
- *  navigator.product -> 'ReactNative'
- */
-function isStandardBrowserEnv() {
-  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
-    return false;
-  }
-  return typeof window !== 'undefined' && typeof document !== 'undefined';
-}
-
-/**
- * Iterate over an Array or an Object invoking a function for each item.
- *
- * If `obj` is an Array callback will be called passing
- * the value, index, and complete array for each item.
- *
- * If 'obj' is an Object callback will be called passing
- * the value, key, and complete object for each property.
- *
- * @param {Object|Array} obj The object to iterate
- * @param {Function} fn The callback to invoke for each item
- */
-function forEach(obj, fn) {
-  // Don't bother if no value provided
-  if (obj === null || typeof obj === 'undefined') {
-    return;
-  }
-
-  // Force an array if not already something iterable
-  if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object' && !isArray(obj)) {
-    /*eslint no-param-reassign:0*/
-    obj = [obj];
-  }
-
-  if (isArray(obj)) {
-    // Iterate over array values
-    for (var i = 0, l = obj.length; i < l; i++) {
-      fn.call(null, obj[i], i, obj);
-    }
-  } else {
-    // Iterate over object keys
-    for (var key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        fn.call(null, obj[key], key, obj);
-      }
-    }
-  }
-}
-
-/**
- * Accepts varargs expecting each argument to be an object, then
- * immutably merges the properties of each object and returns result.
- *
- * When multiple objects contain the same key the later object in
- * the arguments list will take precedence.
- *
- * Example:
- *
- * ```js
- * var result = merge({foo: 123}, {foo: 456});
- * console.log(result.foo); // outputs 456
- * ```
- *
- * @param {Object} obj1 Object to merge
- * @returns {Object} Result of all merge properties
- */
-function merge() /* obj1, obj2, obj3, ... */{
-  var result = {};
-  function assignValue(val, key) {
-    if (_typeof(result[key]) === 'object' && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object') {
-      result[key] = merge(result[key], val);
-    } else {
-      result[key] = val;
-    }
-  }
-
-  for (var i = 0, l = arguments.length; i < l; i++) {
-    forEach(arguments[i], assignValue);
-  }
-  return result;
-}
-
-/**
- * Extends object a by mutably adding to it the properties of object b.
- *
- * @param {Object} a The object to be extended
- * @param {Object} b The object to copy properties from
- * @param {Object} thisArg The object to bind function to
- * @return {Object} The resulting value of object a
- */
-function extend(a, b, thisArg) {
-  forEach(b, function assignValue(val, key) {
-    if (thisArg && typeof val === 'function') {
-      a[key] = bind(val, thisArg);
-    } else {
-      a[key] = val;
-    }
-  });
-  return a;
-}
-
-module.exports = {
-  isArray: isArray,
-  isArrayBuffer: isArrayBuffer,
-  isBuffer: isBuffer,
-  isFormData: isFormData,
-  isArrayBufferView: isArrayBufferView,
-  isString: isString,
-  isNumber: isNumber,
-  isObject: isObject,
-  isUndefined: isUndefined,
-  isDate: isDate,
-  isFile: isFile,
-  isBlob: isBlob,
-  isFunction: isFunction,
-  isStream: isStream,
-  isURLSearchParams: isURLSearchParams,
-  isStandardBrowserEnv: isStandardBrowserEnv,
-  forEach: forEach,
-  merge: merge,
-  extend: extend,
-  trim: trim
-};
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-/* globals __VUE_SSR_CONTEXT__ */
-
-// IMPORTANT: Do NOT use ES2015 features in this file.
-// This module is a runtime utility for cleaner component module output and will
-// be included in the final webpack user bundle.
-
-module.exports = function normalizeComponent (
-  rawScriptExports,
-  compiledTemplate,
-  functionalTemplate,
-  injectStyles,
-  scopeId,
-  moduleIdentifier /* server only */
-) {
-  var esModule
-  var scriptExports = rawScriptExports = rawScriptExports || {}
-
-  // ES6 modules interop
-  var type = typeof rawScriptExports.default
-  if (type === 'object' || type === 'function') {
-    esModule = rawScriptExports
-    scriptExports = rawScriptExports.default
-  }
-
-  // Vue.extend constructor export interop
-  var options = typeof scriptExports === 'function'
-    ? scriptExports.options
-    : scriptExports
-
-  // render functions
-  if (compiledTemplate) {
-    options.render = compiledTemplate.render
-    options.staticRenderFns = compiledTemplate.staticRenderFns
-    options._compiled = true
-  }
-
-  // functional template
-  if (functionalTemplate) {
-    options.functional = true
-  }
-
-  // scopedId
-  if (scopeId) {
-    options._scopeId = scopeId
-  }
-
-  var hook
-  if (moduleIdentifier) { // server build
-    hook = function (context) {
-      // 2.3 injection
-      context =
-        context || // cached call
-        (this.$vnode && this.$vnode.ssrContext) || // stateful
-        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
-      // 2.2 with runInNewContext: true
-      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
-        context = __VUE_SSR_CONTEXT__
-      }
-      // inject component styles
-      if (injectStyles) {
-        injectStyles.call(this, context)
-      }
-      // register component module identifier for async chunk inferrence
-      if (context && context._registeredComponents) {
-        context._registeredComponents.add(moduleIdentifier)
-      }
-    }
-    // used by ssr in case component is cached and beforeCreate
-    // never gets called
-    options._ssrRegister = hook
-  } else if (injectStyles) {
-    hook = injectStyles
-  }
-
-  if (hook) {
-    var functional = options.functional
-    var existing = functional
-      ? options.render
-      : options.beforeCreate
-
-    if (!functional) {
-      // inject component registration as beforeCreate hook
-      options.beforeCreate = existing
-        ? [].concat(existing, hook)
-        : [hook]
-    } else {
-      // for template-only hot-reload because in that case the render fn doesn't
-      // go through the normalizer
-      options._injectStyles = hook
-      // register for functioal component in vue file
-      options.render = function renderWithStyleInjection (h, context) {
-        hook.call(context)
-        return existing(h, context)
-      }
-    }
-  }
-
-  return {
-    esModule: esModule,
-    exports: scriptExports,
-    options: options
-  }
-}
-
-
-/***/ }),
-/* 2 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1448,6 +1031,423 @@ exports.default = index_esm;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+/* globals __VUE_SSR_CONTEXT__ */
+
+// IMPORTANT: Do NOT use ES2015 features in this file.
+// This module is a runtime utility for cleaner component module output and will
+// be included in the final webpack user bundle.
+
+module.exports = function normalizeComponent (
+  rawScriptExports,
+  compiledTemplate,
+  functionalTemplate,
+  injectStyles,
+  scopeId,
+  moduleIdentifier /* server only */
+) {
+  var esModule
+  var scriptExports = rawScriptExports = rawScriptExports || {}
+
+  // ES6 modules interop
+  var type = typeof rawScriptExports.default
+  if (type === 'object' || type === 'function') {
+    esModule = rawScriptExports
+    scriptExports = rawScriptExports.default
+  }
+
+  // Vue.extend constructor export interop
+  var options = typeof scriptExports === 'function'
+    ? scriptExports.options
+    : scriptExports
+
+  // render functions
+  if (compiledTemplate) {
+    options.render = compiledTemplate.render
+    options.staticRenderFns = compiledTemplate.staticRenderFns
+    options._compiled = true
+  }
+
+  // functional template
+  if (functionalTemplate) {
+    options.functional = true
+  }
+
+  // scopedId
+  if (scopeId) {
+    options._scopeId = scopeId
+  }
+
+  var hook
+  if (moduleIdentifier) { // server build
+    hook = function (context) {
+      // 2.3 injection
+      context =
+        context || // cached call
+        (this.$vnode && this.$vnode.ssrContext) || // stateful
+        (this.parent && this.parent.$vnode && this.parent.$vnode.ssrContext) // functional
+      // 2.2 with runInNewContext: true
+      if (!context && typeof __VUE_SSR_CONTEXT__ !== 'undefined') {
+        context = __VUE_SSR_CONTEXT__
+      }
+      // inject component styles
+      if (injectStyles) {
+        injectStyles.call(this, context)
+      }
+      // register component module identifier for async chunk inferrence
+      if (context && context._registeredComponents) {
+        context._registeredComponents.add(moduleIdentifier)
+      }
+    }
+    // used by ssr in case component is cached and beforeCreate
+    // never gets called
+    options._ssrRegister = hook
+  } else if (injectStyles) {
+    hook = injectStyles
+  }
+
+  if (hook) {
+    var functional = options.functional
+    var existing = functional
+      ? options.render
+      : options.beforeCreate
+
+    if (!functional) {
+      // inject component registration as beforeCreate hook
+      options.beforeCreate = existing
+        ? [].concat(existing, hook)
+        : [hook]
+    } else {
+      // for template-only hot-reload because in that case the render fn doesn't
+      // go through the normalizer
+      options._injectStyles = hook
+      // register for functioal component in vue file
+      options.render = function renderWithStyleInjection (h, context) {
+        hook.call(context)
+        return existing(h, context)
+      }
+    }
+  }
+
+  return {
+    esModule: esModule,
+    exports: scriptExports,
+    options: options
+  }
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var bind = __webpack_require__(11);
+var isBuffer = __webpack_require__(27);
+
+/*global toString:true*/
+
+// utils is a library of generic helper functions non-specific to axios
+
+var toString = Object.prototype.toString;
+
+/**
+ * Determine if a value is an Array
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Array, otherwise false
+ */
+function isArray(val) {
+  return toString.call(val) === '[object Array]';
+}
+
+/**
+ * Determine if a value is an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an ArrayBuffer, otherwise false
+ */
+function isArrayBuffer(val) {
+  return toString.call(val) === '[object ArrayBuffer]';
+}
+
+/**
+ * Determine if a value is a FormData
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an FormData, otherwise false
+ */
+function isFormData(val) {
+  return typeof FormData !== 'undefined' && val instanceof FormData;
+}
+
+/**
+ * Determine if a value is a view on an ArrayBuffer
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
+ */
+function isArrayBufferView(val) {
+  var result;
+  if (typeof ArrayBuffer !== 'undefined' && ArrayBuffer.isView) {
+    result = ArrayBuffer.isView(val);
+  } else {
+    result = val && val.buffer && val.buffer instanceof ArrayBuffer;
+  }
+  return result;
+}
+
+/**
+ * Determine if a value is a String
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a String, otherwise false
+ */
+function isString(val) {
+  return typeof val === 'string';
+}
+
+/**
+ * Determine if a value is a Number
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Number, otherwise false
+ */
+function isNumber(val) {
+  return typeof val === 'number';
+}
+
+/**
+ * Determine if a value is undefined
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if the value is undefined, otherwise false
+ */
+function isUndefined(val) {
+  return typeof val === 'undefined';
+}
+
+/**
+ * Determine if a value is an Object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is an Object, otherwise false
+ */
+function isObject(val) {
+  return val !== null && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object';
+}
+
+/**
+ * Determine if a value is a Date
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Date, otherwise false
+ */
+function isDate(val) {
+  return toString.call(val) === '[object Date]';
+}
+
+/**
+ * Determine if a value is a File
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a File, otherwise false
+ */
+function isFile(val) {
+  return toString.call(val) === '[object File]';
+}
+
+/**
+ * Determine if a value is a Blob
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Blob, otherwise false
+ */
+function isBlob(val) {
+  return toString.call(val) === '[object Blob]';
+}
+
+/**
+ * Determine if a value is a Function
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Function, otherwise false
+ */
+function isFunction(val) {
+  return toString.call(val) === '[object Function]';
+}
+
+/**
+ * Determine if a value is a Stream
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a Stream, otherwise false
+ */
+function isStream(val) {
+  return isObject(val) && isFunction(val.pipe);
+}
+
+/**
+ * Determine if a value is a URLSearchParams object
+ *
+ * @param {Object} val The value to test
+ * @returns {boolean} True if value is a URLSearchParams object, otherwise false
+ */
+function isURLSearchParams(val) {
+  return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
+}
+
+/**
+ * Trim excess whitespace off the beginning and end of a string
+ *
+ * @param {String} str The String to trim
+ * @returns {String} The String freed of excess whitespace
+ */
+function trim(str) {
+  return str.replace(/^\s*/, '').replace(/\s*$/, '');
+}
+
+/**
+ * Determine if we're running in a standard browser environment
+ *
+ * This allows axios to run in a web worker, and react-native.
+ * Both environments support XMLHttpRequest, but not fully standard globals.
+ *
+ * web workers:
+ *  typeof window -> undefined
+ *  typeof document -> undefined
+ *
+ * react-native:
+ *  navigator.product -> 'ReactNative'
+ */
+function isStandardBrowserEnv() {
+  if (typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+    return false;
+  }
+  return typeof window !== 'undefined' && typeof document !== 'undefined';
+}
+
+/**
+ * Iterate over an Array or an Object invoking a function for each item.
+ *
+ * If `obj` is an Array callback will be called passing
+ * the value, index, and complete array for each item.
+ *
+ * If 'obj' is an Object callback will be called passing
+ * the value, key, and complete object for each property.
+ *
+ * @param {Object|Array} obj The object to iterate
+ * @param {Function} fn The callback to invoke for each item
+ */
+function forEach(obj, fn) {
+  // Don't bother if no value provided
+  if (obj === null || typeof obj === 'undefined') {
+    return;
+  }
+
+  // Force an array if not already something iterable
+  if ((typeof obj === 'undefined' ? 'undefined' : _typeof(obj)) !== 'object' && !isArray(obj)) {
+    /*eslint no-param-reassign:0*/
+    obj = [obj];
+  }
+
+  if (isArray(obj)) {
+    // Iterate over array values
+    for (var i = 0, l = obj.length; i < l; i++) {
+      fn.call(null, obj[i], i, obj);
+    }
+  } else {
+    // Iterate over object keys
+    for (var key in obj) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        fn.call(null, obj[key], key, obj);
+      }
+    }
+  }
+}
+
+/**
+ * Accepts varargs expecting each argument to be an object, then
+ * immutably merges the properties of each object and returns result.
+ *
+ * When multiple objects contain the same key the later object in
+ * the arguments list will take precedence.
+ *
+ * Example:
+ *
+ * ```js
+ * var result = merge({foo: 123}, {foo: 456});
+ * console.log(result.foo); // outputs 456
+ * ```
+ *
+ * @param {Object} obj1 Object to merge
+ * @returns {Object} Result of all merge properties
+ */
+function merge() /* obj1, obj2, obj3, ... */{
+  var result = {};
+  function assignValue(val, key) {
+    if (_typeof(result[key]) === 'object' && (typeof val === 'undefined' ? 'undefined' : _typeof(val)) === 'object') {
+      result[key] = merge(result[key], val);
+    } else {
+      result[key] = val;
+    }
+  }
+
+  for (var i = 0, l = arguments.length; i < l; i++) {
+    forEach(arguments[i], assignValue);
+  }
+  return result;
+}
+
+/**
+ * Extends object a by mutably adding to it the properties of object b.
+ *
+ * @param {Object} a The object to be extended
+ * @param {Object} b The object to copy properties from
+ * @param {Object} thisArg The object to bind function to
+ * @return {Object} The resulting value of object a
+ */
+function extend(a, b, thisArg) {
+  forEach(b, function assignValue(val, key) {
+    if (thisArg && typeof val === 'function') {
+      a[key] = bind(val, thisArg);
+    } else {
+      a[key] = val;
+    }
+  });
+  return a;
+}
+
+module.exports = {
+  isArray: isArray,
+  isArrayBuffer: isArrayBuffer,
+  isBuffer: isBuffer,
+  isFormData: isFormData,
+  isArrayBufferView: isArrayBufferView,
+  isString: isString,
+  isNumber: isNumber,
+  isObject: isObject,
+  isUndefined: isUndefined,
+  isDate: isDate,
+  isFile: isFile,
+  isBlob: isBlob,
+  isFunction: isFunction,
+  isStream: isStream,
+  isURLSearchParams: isURLSearchParams,
+  isStandardBrowserEnv: isStandardBrowserEnv,
+  forEach: forEach,
+  merge: merge,
+  extend: extend,
+  trim: trim
+};
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1647,158 +1647,100 @@ process.umask = function () {
 "use strict";
 
 
-module.exports = __webpack_require__(21);
+var deepEqual = __webpack_require__(75);
+
+// This implementation of debounce was taken from the blog of David Walsh.
+// See here: https://davidwalsh.name/javascript-debounce-function
+module.exports.debounce = function (func, wait, immediate) {
+  var timeout;
+
+  return function () {
+    var context = this;
+    var args = arguments;
+    var later = function later() {
+      timeout = null;
+      if (!immediate) {
+        func.apply(context, args);
+      }
+    };
+
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) {
+      func.apply(context, args);
+    }
+  };
+};
+
+module.exports.format = function (template) {
+  var args = Array.prototype.slice.call(arguments, 1);
+  return template.replace(/{(\d+)}/g, function (match, number) {
+    return typeof args[number] != 'undefined' ? args[number] : match;
+  });
+};
+
+module.exports.isArray = function (arg) {
+  if (typeof Array.isArray === 'function') {
+    return Array.isArray(arg);
+  }
+
+  return Object.prototype.toString.call(arg) === '[object Array]';
+};
+
+module.exports.isEmpty = function (value) {
+  if (module.exports.isArray(value)) {
+    return !value.length;
+  } else if (value === undefined || value === null) {
+    return true;
+  } else {
+    return !String(value).trim().length;
+  }
+};
+
+module.exports.isEqual = function (o1, o2) {
+  return deepEqual(o1, o2);
+};
+
+module.exports.isFunction = function (arg) {
+  return typeof arg === 'function';
+};
+
+module.exports.isNaN = function (arg) {
+  return (/^\s*$/.test(arg) || isNaN(arg)
+  );
+};
+
+module.exports.isNull = function (arg) {
+  return arg === null;
+};
+
+module.exports.isString = function (arg) {
+  return typeof arg === 'string' || arg instanceof String;
+};
+
+module.exports.isUndefined = function (arg) {
+  return typeof arg === 'undefined';
+};
+
+module.exports.omit = function omit(obj, key) {
+  var result = {};
+
+  for (var name in obj) {
+    if (name !== key) {
+      result[name] = obj[name];
+    }
+  }
+
+  return result;
+};
+
+module.exports.templates = __webpack_require__(78);
+
+module.exports.mode = 'interactive'; // other values: conservative and manual
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {
-
-var utils = __webpack_require__(0);
-var normalizeHeaderName = __webpack_require__(24);
-
-var DEFAULT_CONTENT_TYPE = {
-  'Content-Type': 'application/x-www-form-urlencoded'
-};
-
-function setContentTypeIfUnset(headers, value) {
-  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-    headers['Content-Type'] = value;
-  }
-}
-
-function getDefaultAdapter() {
-  var adapter;
-  if (typeof XMLHttpRequest !== 'undefined') {
-    // For browsers use XHR adapter
-    adapter = __webpack_require__(11);
-  } else if (typeof process !== 'undefined') {
-    // For node use HTTP adapter
-    adapter = __webpack_require__(11);
-  }
-  return adapter;
-}
-
-var defaults = {
-  adapter: getDefaultAdapter(),
-
-  transformRequest: [function transformRequest(data, headers) {
-    normalizeHeaderName(headers, 'Content-Type');
-    if (utils.isFormData(data) || utils.isArrayBuffer(data) || utils.isBuffer(data) || utils.isStream(data) || utils.isFile(data) || utils.isBlob(data)) {
-      return data;
-    }
-    if (utils.isArrayBufferView(data)) {
-      return data.buffer;
-    }
-    if (utils.isURLSearchParams(data)) {
-      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-      return data.toString();
-    }
-    if (utils.isObject(data)) {
-      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-      return JSON.stringify(data);
-    }
-    return data;
-  }],
-
-  transformResponse: [function transformResponse(data) {
-    /*eslint no-param-reassign:0*/
-    if (typeof data === 'string') {
-      try {
-        data = JSON.parse(data);
-      } catch (e) {/* Ignore */}
-    }
-    return data;
-  }],
-
-  timeout: 0,
-
-  xsrfCookieName: 'XSRF-TOKEN',
-  xsrfHeaderName: 'X-XSRF-TOKEN',
-
-  maxContentLength: -1,
-
-  validateStatus: function validateStatus(status) {
-    return status >= 200 && status < 300;
-  }
-};
-
-defaults.headers = {
-  common: {
-    'Accept': 'application/json, text/plain, */*'
-  }
-};
-
-utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-  defaults.headers[method] = {};
-});
-
-utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-});
-
-module.exports = defaults;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = {
-  methods: {
-    formToString: function formToString(form_id) {
-      var form = document.getElementById(form_id);
-      var ret = '';
-      var elements = form.querySelectorAll("input, select, textarea");
-      for (var i = 0; i < elements.length; ++i) {
-        var element = elements[i];
-        var name = element.name;
-        var value = element.value;
-        if (name) {
-          ret += encodeURIComponent(element.name) + "=" + encodeURIComponent(element.value) + "&";
-        }
-      }
-      return ret;
-    }
-  }
-};
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var numbers = exports.numbers = function numbers() {
-  var data_numbers = [];
-  for (var i = 1; i <= 99; i++) {
-    data_numbers.push({ digit: i, value: i });
-  }
-  return data_numbers;
-};
-var alphabets = exports.alphabets = function alphabets() {
-  var data_alphabets = [];
-  var str_alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  for (var i = 0; i < str_alphabets.length; i++) {
-    data_alphabets.push({ letter: str_alphabets.charAt(i), value: str_alphabets.charAt(i) });
-  }
-  return data_alphabets;
-};
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11409,10 +11351,65 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
   return Vue$3;
 });
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(17).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(22).setImmediate))
 
 /***/ }),
-/* 9 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = {
+  methods: {
+    formToString: function formToString(form_id) {
+      var form = document.getElementById(form_id);
+      var ret = '';
+      var elements = form.querySelectorAll("input, select, textarea");
+      for (var i = 0; i < elements.length; ++i) {
+        var element = elements[i];
+        var name = element.name;
+        var value = element.value;
+        if (name) {
+          ret += encodeURIComponent(element.name) + "=" + encodeURIComponent(element.value) + "&";
+        }
+      }
+      return ret;
+    }
+  }
+};
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var numbers = exports.numbers = function numbers() {
+  var data_numbers = [];
+  for (var i = 1; i <= 99; i++) {
+    data_numbers.push({ digit: i, value: i });
+  }
+  return data_numbers;
+};
+var alphabets = exports.alphabets = function alphabets() {
+  var data_alphabets = [];
+  var str_alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for (var i = 0; i < str_alphabets.length; i++) {
+    data_alphabets.push({ letter: str_alphabets.charAt(i), value: str_alphabets.charAt(i) });
+  }
+  return data_alphabets;
+};
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11442,7 +11439,109 @@ try {
 module.exports = g;
 
 /***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = __webpack_require__(26);
+
+/***/ }),
 /* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {
+
+var utils = __webpack_require__(2);
+var normalizeHeaderName = __webpack_require__(29);
+
+var DEFAULT_CONTENT_TYPE = {
+  'Content-Type': 'application/x-www-form-urlencoded'
+};
+
+function setContentTypeIfUnset(headers, value) {
+  if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
+    headers['Content-Type'] = value;
+  }
+}
+
+function getDefaultAdapter() {
+  var adapter;
+  if (typeof XMLHttpRequest !== 'undefined') {
+    // For browsers use XHR adapter
+    adapter = __webpack_require__(12);
+  } else if (typeof process !== 'undefined') {
+    // For node use HTTP adapter
+    adapter = __webpack_require__(12);
+  }
+  return adapter;
+}
+
+var defaults = {
+  adapter: getDefaultAdapter(),
+
+  transformRequest: [function transformRequest(data, headers) {
+    normalizeHeaderName(headers, 'Content-Type');
+    if (utils.isFormData(data) || utils.isArrayBuffer(data) || utils.isBuffer(data) || utils.isStream(data) || utils.isFile(data) || utils.isBlob(data)) {
+      return data;
+    }
+    if (utils.isArrayBufferView(data)) {
+      return data.buffer;
+    }
+    if (utils.isURLSearchParams(data)) {
+      setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
+      return data.toString();
+    }
+    if (utils.isObject(data)) {
+      setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
+      return JSON.stringify(data);
+    }
+    return data;
+  }],
+
+  transformResponse: [function transformResponse(data) {
+    /*eslint no-param-reassign:0*/
+    if (typeof data === 'string') {
+      try {
+        data = JSON.parse(data);
+      } catch (e) {/* Ignore */}
+    }
+    return data;
+  }],
+
+  timeout: 0,
+
+  xsrfCookieName: 'XSRF-TOKEN',
+  xsrfHeaderName: 'X-XSRF-TOKEN',
+
+  maxContentLength: -1,
+
+  validateStatus: function validateStatus(status) {
+    return status >= 200 && status < 300;
+  }
+};
+
+defaults.headers = {
+  common: {
+    'Accept': 'application/json, text/plain, */*'
+  }
+};
+
+utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
+  defaults.headers[method] = {};
+});
+
+utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
+  defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
+});
+
+module.exports = defaults;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ }),
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11459,19 +11558,19 @@ module.exports = function bind(fn, thisArg) {
 };
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {
 
-var utils = __webpack_require__(0);
-var settle = __webpack_require__(25);
-var buildURL = __webpack_require__(27);
-var parseHeaders = __webpack_require__(28);
-var isURLSameOrigin = __webpack_require__(29);
-var createError = __webpack_require__(12);
-var btoa = typeof window !== 'undefined' && window.btoa && window.btoa.bind(window) || __webpack_require__(30);
+var utils = __webpack_require__(2);
+var settle = __webpack_require__(30);
+var buildURL = __webpack_require__(32);
+var parseHeaders = __webpack_require__(33);
+var isURLSameOrigin = __webpack_require__(34);
+var createError = __webpack_require__(13);
+var btoa = typeof window !== 'undefined' && window.btoa && window.btoa.bind(window) || __webpack_require__(35);
 
 module.exports = function xhrAdapter(config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
@@ -11564,7 +11663,7 @@ module.exports = function xhrAdapter(config) {
     // This is only done if running in a standard browser environment.
     // Specifically not if we're in a web worker, or react-native.
     if (utils.isStandardBrowserEnv()) {
-      var cookies = __webpack_require__(31);
+      var cookies = __webpack_require__(36);
 
       // Add xsrf header
       var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ? cookies.read(config.xsrfCookieName) : undefined;
@@ -11640,13 +11739,13 @@ module.exports = function xhrAdapter(config) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var enhanceError = __webpack_require__(26);
+var enhanceError = __webpack_require__(31);
 
 /**
  * Create an Error with the specified message, config, error code, request and response.
@@ -11664,7 +11763,7 @@ module.exports = function createError(message, config, code, request, response) 
 };
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11675,7 +11774,7 @@ module.exports = function isCancel(value) {
 };
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11701,23 +11800,1790 @@ Cancel.prototype.__CANCEL__ = true;
 module.exports = Cancel;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-__webpack_require__(16);
+var ValidationBag = __webpack_require__(17);
+var Rule = __webpack_require__(19);
+var Validator = __webpack_require__(79);
+var mixin = __webpack_require__(80);
+var utils = __webpack_require__(4);
 
-var _vue = __webpack_require__(8);
+/* plugin install
+ ----------------------------------- */
+
+function install(Vue, options) {
+  Vue.mixin(mixin);
+  if (options && options.templates) {
+    extendTemplates(options.templates);
+  }
+  if (options && options.mode) {
+    setMode(options.mode);
+  }
+  if (options && options.Promise) {
+    mixin.Promise = options.Promise;
+  }
+}
+
+function extendTemplates(newTemplates) {
+  Object.keys(newTemplates).forEach(function (key) {
+    utils.templates[key] = newTemplates[key];
+  });
+}
+
+function setMode(mode) {
+  if (mode !== 'interactive' && mode !== 'conservative' && mode !== 'manual') {
+    throw new Error('Invalid mode: ' + mode);
+  }
+  utils.mode = mode;
+}
+
+/* exports
+ ----------------------------------- */
+
+module.exports.name = 'SimpleVueValidator';
+module.exports.ValidationBag = ValidationBag;
+module.exports.Rule = Rule;
+module.exports.Validator = Validator;
+module.exports.mixin = mixin;
+module.exports.install = install;
+module.exports.extendTemplates = extendTemplates;
+module.exports.setMode = setMode;
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var Promise = __webpack_require__(18).Promise;
+
+var utils = __webpack_require__(4);
+
+function ValidationBag() {
+  this.sessionId = 0; // async validator will check this before adding error
+  this.resetting = 0; // do not allow to add error while reset is in progress
+  this.errors = [];
+  this.validatingRecords = [];
+  this.passedRecords = [];
+  this.touchedRecords = [];
+  this.activated = false; // set when $validate() is call, this flag works with the conservative mode
+}
+
+ValidationBag.prototype._setVM = function (vm) {
+  this._vm = vm;
+};
+
+ValidationBag.prototype.addError = function (field, message) {
+  if (this.resetting) {
+    return;
+  }
+  this.errors.push({ field: field, message: message });
+};
+
+ValidationBag.prototype.removeErrors = function (field) {
+  if (utils.isUndefined(field)) {
+    this.errors = [];
+  } else {
+    this.errors = this.errors.filter(function (e) {
+      return e.field !== field;
+    });
+  }
+};
+
+ValidationBag.prototype.hasError = function (field) {
+  return utils.isUndefined(field) ? !!this.errors.length : !!this.firstError(field);
+};
+
+ValidationBag.prototype.firstError = function (field) {
+  for (var i = 0; i < this.errors.length; i++) {
+    if (utils.isUndefined(field) || this.errors[i].field === field) {
+      return this.errors[i].message;
+    }
+  }
+  return null;
+};
+
+ValidationBag.prototype.allErrors = function (field) {
+  return this.errors.filter(function (e) {
+    return utils.isUndefined(field) || e.field === field;
+  }).map(function (e) {
+    return e.message;
+  });
+};
+
+ValidationBag.prototype.countErrors = function (field) {
+  return utils.isUndefined(field) ? this.errors.length : this.errors.filter(function (e) {
+    return field === e.field;
+  }).length;
+};
+
+ValidationBag.prototype.setValidating = function (field, id) {
+  if (this.resetting) {
+    return;
+  }
+  id = id || ValidationBag.newValidatingId();
+  var existingValidatingRecords = this.validatingRecords.filter(function (validating) {
+    return validating.field === field && validating.id === id;
+  });
+  if (!utils.isEmpty(existingValidatingRecords)) {
+    throw new Error('Validating id already set: ' + id);
+  }
+  this.validatingRecords.push({ field: field, id: id });
+  return id;
+};
+
+ValidationBag.prototype.resetValidating = function (field, id) {
+  if (!field) {
+    this.validatingRecords = [];
+    return;
+  }
+
+  function idMatched(validating) {
+    return utils.isUndefined(id) ? true : validating.id === id;
+  }
+
+  var hasMore = true;
+  while (hasMore) {
+    var index = -1;
+    for (var i = 0; i < this.validatingRecords.length; i++) {
+      if (this.validatingRecords[i].field === field && idMatched(this.validatingRecords[i])) {
+        index = i;
+        break;
+      }
+    }
+    if (index >= 0) {
+      this.validatingRecords.splice(index, 1);
+    } else {
+      hasMore = false;
+    }
+  }
+};
+
+ValidationBag.prototype.isValidating = function (field, id) {
+  function idMatched(validating) {
+    return utils.isUndefined(id) ? true : validating.id === id;
+  }
+
+  var existingValidatingRecords = this.validatingRecords.filter(function (validating) {
+    return (utils.isUndefined(field) || validating.field === field) && idMatched(validating);
+  });
+  return !utils.isEmpty(existingValidatingRecords);
+};
+
+ValidationBag.prototype.setPassed = function (field) {
+  if (this.resetting) {
+    return;
+  }
+  setValue(this.passedRecords, field);
+};
+
+ValidationBag.prototype.resetPassed = function (field) {
+  resetValue(this.passedRecords, field);
+};
+
+ValidationBag.prototype.isPassed = function (field) {
+  return isValueSet(this.passedRecords, field);
+};
+
+ValidationBag.prototype.setTouched = function (field) {
+  if (this.resetting) {
+    return;
+  }
+  setValue(this.touchedRecords, field);
+};
+
+ValidationBag.prototype.resetTouched = function (field) {
+  resetValue(this.touchedRecords, field);
+};
+
+ValidationBag.prototype.isTouched = function (field) {
+  return isValueSet(this.touchedRecords, field);
+};
+
+function setValue(records, field) {
+  var existingRecords = records.filter(function (record) {
+    return record.field === field;
+  });
+  if (!utils.isEmpty(existingRecords)) {
+    existingRecords[0].value = true;
+  } else {
+    records.push({ field: field, value: true });
+  }
+}
+
+function resetValue(records, field) {
+  if (!field) {
+    records.splice(0, records.length);
+    return;
+  }
+  var existingRecords = records.filter(function (record) {
+    return record.field === field;
+  });
+  if (!utils.isEmpty(existingRecords)) {
+    existingRecords[0].value = false;
+  }
+}
+
+function isValueSet(records, field) {
+  var existingRecords = records.filter(function (record) {
+    return record.field === field;
+  });
+  return !utils.isEmpty(existingRecords) && existingRecords[0].value;
+}
+
+ValidationBag.prototype.reset = function () {
+  this.sessionId++;
+  this.errors = [];
+  this.validatingRecords = [];
+  this.passedRecords = [];
+  this.touchedRecords = [];
+  if (this._vm) {
+    // prevent field updates at the same tick to change validation status
+    this.resetting++;
+    this._vm.$nextTick(function () {
+      this.resetting--;
+    }.bind(this));
+  }
+  this.activated = false;
+};
+
+// returns true if any error is added
+ValidationBag.prototype.setError = function (field, message) {
+  if (this.resetting) {
+    return;
+  }
+  this.removeErrors(field);
+  this.resetPassed(field);
+
+  var messages = utils.isArray(message) ? message : [message];
+  var addMessages = function (messages) {
+    var hasError = false;
+    messages.forEach(function (message) {
+      if (message) {
+        this.addError(field, message);
+        hasError = true;
+      }
+    }, this);
+    if (!hasError) {
+      this.setPassed(field);
+    }
+    return hasError;
+  }.bind(this);
+
+  var hasPromise = messages.filter(function (message) {
+    return message && message.then;
+  }).length > 0;
+  if (!hasPromise) {
+    return Promise.resolve(addMessages(messages));
+  } else {
+    // if message is promise, we are encountering async validation, set validating flag and wait for message to resolve
+    // reset previous validating status for this field
+    this.resetValidating(field);
+    var validatingId = this.setValidating(field);
+    var always = function () {
+      //console.log(validatingId + ' | ' + 'end');
+      this.resetValidating(field, validatingId);
+    }.bind(this);
+    //console.log(validatingId + ' | ' + 'start');
+    return Promise.all(messages).then(function (messages) {
+      // check if the validating id is is still valid
+      if (this.isValidating(field, validatingId)) {
+        //console.log(validatingId + ' | ' + 'processed');
+        return addMessages(messages);
+      }
+      return false;
+    }.bind(this)).then(function (result) {
+      always();
+      return result;
+    }).catch(function (e) {
+      always();
+      return Promise.reject(e);
+    }.bind(this));
+  }
+};
+
+ValidationBag.prototype.checkRule = function (rule) {
+  if (this.resetting) {
+    return;
+  }
+  return this.setError(rule._field, rule._messages);
+};
+
+var validatingId = 0;
+
+ValidationBag.newValidatingId = function () {
+  return (++validatingId).toString();
+};
+
+module.exports = ValidationBag;
+
+/***/ }),
+/* 18 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process, global) {var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;var require;
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+/*!
+ * @overview es6-promise - a tiny implementation of Promises/A+.
+ * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
+ * @license   Licensed under MIT license
+ *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
+ * @version   4.1.1
+ */
+
+(function (global, factory) {
+  ( false ? 'undefined' : _typeof(exports)) === 'object' && typeof module !== 'undefined' ? module.exports = factory() :  true ? !(__WEBPACK_AMD_DEFINE_FACTORY__ = (factory),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__)) : global.ES6Promise = factory();
+})(undefined, function () {
+  'use strict';
+
+  function objectOrFunction(x) {
+    var type = typeof x === 'undefined' ? 'undefined' : _typeof(x);
+    return x !== null && (type === 'object' || type === 'function');
+  }
+
+  function isFunction(x) {
+    return typeof x === 'function';
+  }
+
+  var _isArray = undefined;
+  if (Array.isArray) {
+    _isArray = Array.isArray;
+  } else {
+    _isArray = function _isArray(x) {
+      return Object.prototype.toString.call(x) === '[object Array]';
+    };
+  }
+
+  var isArray = _isArray;
+
+  var len = 0;
+  var vertxNext = undefined;
+  var customSchedulerFn = undefined;
+
+  var asap = function asap(callback, arg) {
+    queue[len] = callback;
+    queue[len + 1] = arg;
+    len += 2;
+    if (len === 2) {
+      // If len is 2, that means that we need to schedule an async flush.
+      // If additional callbacks are queued before the queue is flushed, they
+      // will be processed by this flush that we are scheduling.
+      if (customSchedulerFn) {
+        customSchedulerFn(flush);
+      } else {
+        scheduleFlush();
+      }
+    }
+  };
+
+  function setScheduler(scheduleFn) {
+    customSchedulerFn = scheduleFn;
+  }
+
+  function setAsap(asapFn) {
+    asap = asapFn;
+  }
+
+  var browserWindow = typeof window !== 'undefined' ? window : undefined;
+  var browserGlobal = browserWindow || {};
+  var BrowserMutationObserver = browserGlobal.MutationObserver || browserGlobal.WebKitMutationObserver;
+  var isNode = typeof self === 'undefined' && typeof process !== 'undefined' && {}.toString.call(process) === '[object process]';
+
+  // test for web worker but not in IE10
+  var isWorker = typeof Uint8ClampedArray !== 'undefined' && typeof importScripts !== 'undefined' && typeof MessageChannel !== 'undefined';
+
+  // node
+  function useNextTick() {
+    // node version 0.10.x displays a deprecation warning when nextTick is used recursively
+    // see https://github.com/cujojs/when/issues/410 for details
+    return function () {
+      return process.nextTick(flush);
+    };
+  }
+
+  // vertx
+  function useVertxTimer() {
+    if (typeof vertxNext !== 'undefined') {
+      return function () {
+        vertxNext(flush);
+      };
+    }
+
+    return useSetTimeout();
+  }
+
+  function useMutationObserver() {
+    var iterations = 0;
+    var observer = new BrowserMutationObserver(flush);
+    var node = document.createTextNode('');
+    observer.observe(node, { characterData: true });
+
+    return function () {
+      node.data = iterations = ++iterations % 2;
+    };
+  }
+
+  // web worker
+  function useMessageChannel() {
+    var channel = new MessageChannel();
+    channel.port1.onmessage = flush;
+    return function () {
+      return channel.port2.postMessage(0);
+    };
+  }
+
+  function useSetTimeout() {
+    // Store setTimeout reference so es6-promise will be unaffected by
+    // other code modifying setTimeout (like sinon.useFakeTimers())
+    var globalSetTimeout = setTimeout;
+    return function () {
+      return globalSetTimeout(flush, 1);
+    };
+  }
+
+  var queue = new Array(1000);
+  function flush() {
+    for (var i = 0; i < len; i += 2) {
+      var callback = queue[i];
+      var arg = queue[i + 1];
+
+      callback(arg);
+
+      queue[i] = undefined;
+      queue[i + 1] = undefined;
+    }
+
+    len = 0;
+  }
+
+  function attemptVertx() {
+    try {
+      var r = require;
+      var vertx = __webpack_require__(74);
+      vertxNext = vertx.runOnLoop || vertx.runOnContext;
+      return useVertxTimer();
+    } catch (e) {
+      return useSetTimeout();
+    }
+  }
+
+  var scheduleFlush = undefined;
+  // Decide what async method to use to triggering processing of queued callbacks:
+  if (isNode) {
+    scheduleFlush = useNextTick();
+  } else if (BrowserMutationObserver) {
+    scheduleFlush = useMutationObserver();
+  } else if (isWorker) {
+    scheduleFlush = useMessageChannel();
+  } else if (browserWindow === undefined && "function" === 'function') {
+    scheduleFlush = attemptVertx();
+  } else {
+    scheduleFlush = useSetTimeout();
+  }
+
+  function then(onFulfillment, onRejection) {
+    var _arguments = arguments;
+
+    var parent = this;
+
+    var child = new this.constructor(noop);
+
+    if (child[PROMISE_ID] === undefined) {
+      makePromise(child);
+    }
+
+    var _state = parent._state;
+
+    if (_state) {
+      (function () {
+        var callback = _arguments[_state - 1];
+        asap(function () {
+          return invokeCallback(_state, child, callback, parent._result);
+        });
+      })();
+    } else {
+      subscribe(parent, child, onFulfillment, onRejection);
+    }
+
+    return child;
+  }
+
+  /**
+    `Promise.resolve` returns a promise that will become resolved with the
+    passed `value`. It is shorthand for the following:
+  
+    ```javascript
+    let promise = new Promise(function(resolve, reject){
+      resolve(1);
+    });
+  
+    promise.then(function(value){
+      // value === 1
+    });
+    ```
+  
+    Instead of writing the above, your code now simply becomes the following:
+  
+    ```javascript
+    let promise = Promise.resolve(1);
+  
+    promise.then(function(value){
+      // value === 1
+    });
+    ```
+  
+    @method resolve
+    @static
+    @param {Any} value value that the returned promise will be resolved with
+    Useful for tooling.
+    @return {Promise} a promise that will become fulfilled with the given
+    `value`
+  */
+  function resolve$1(object) {
+    /*jshint validthis:true */
+    var Constructor = this;
+
+    if (object && (typeof object === 'undefined' ? 'undefined' : _typeof(object)) === 'object' && object.constructor === Constructor) {
+      return object;
+    }
+
+    var promise = new Constructor(noop);
+    resolve(promise, object);
+    return promise;
+  }
+
+  var PROMISE_ID = Math.random().toString(36).substring(16);
+
+  function noop() {}
+
+  var PENDING = void 0;
+  var FULFILLED = 1;
+  var REJECTED = 2;
+
+  var GET_THEN_ERROR = new ErrorObject();
+
+  function selfFulfillment() {
+    return new TypeError("You cannot resolve a promise with itself");
+  }
+
+  function cannotReturnOwn() {
+    return new TypeError('A promises callback cannot return that same promise.');
+  }
+
+  function getThen(promise) {
+    try {
+      return promise.then;
+    } catch (error) {
+      GET_THEN_ERROR.error = error;
+      return GET_THEN_ERROR;
+    }
+  }
+
+  function tryThen(then$$1, value, fulfillmentHandler, rejectionHandler) {
+    try {
+      then$$1.call(value, fulfillmentHandler, rejectionHandler);
+    } catch (e) {
+      return e;
+    }
+  }
+
+  function handleForeignThenable(promise, thenable, then$$1) {
+    asap(function (promise) {
+      var sealed = false;
+      var error = tryThen(then$$1, thenable, function (value) {
+        if (sealed) {
+          return;
+        }
+        sealed = true;
+        if (thenable !== value) {
+          resolve(promise, value);
+        } else {
+          fulfill(promise, value);
+        }
+      }, function (reason) {
+        if (sealed) {
+          return;
+        }
+        sealed = true;
+
+        reject(promise, reason);
+      }, 'Settle: ' + (promise._label || ' unknown promise'));
+
+      if (!sealed && error) {
+        sealed = true;
+        reject(promise, error);
+      }
+    }, promise);
+  }
+
+  function handleOwnThenable(promise, thenable) {
+    if (thenable._state === FULFILLED) {
+      fulfill(promise, thenable._result);
+    } else if (thenable._state === REJECTED) {
+      reject(promise, thenable._result);
+    } else {
+      subscribe(thenable, undefined, function (value) {
+        return resolve(promise, value);
+      }, function (reason) {
+        return reject(promise, reason);
+      });
+    }
+  }
+
+  function handleMaybeThenable(promise, maybeThenable, then$$1) {
+    if (maybeThenable.constructor === promise.constructor && then$$1 === then && maybeThenable.constructor.resolve === resolve$1) {
+      handleOwnThenable(promise, maybeThenable);
+    } else {
+      if (then$$1 === GET_THEN_ERROR) {
+        reject(promise, GET_THEN_ERROR.error);
+        GET_THEN_ERROR.error = null;
+      } else if (then$$1 === undefined) {
+        fulfill(promise, maybeThenable);
+      } else if (isFunction(then$$1)) {
+        handleForeignThenable(promise, maybeThenable, then$$1);
+      } else {
+        fulfill(promise, maybeThenable);
+      }
+    }
+  }
+
+  function resolve(promise, value) {
+    if (promise === value) {
+      reject(promise, selfFulfillment());
+    } else if (objectOrFunction(value)) {
+      handleMaybeThenable(promise, value, getThen(value));
+    } else {
+      fulfill(promise, value);
+    }
+  }
+
+  function publishRejection(promise) {
+    if (promise._onerror) {
+      promise._onerror(promise._result);
+    }
+
+    publish(promise);
+  }
+
+  function fulfill(promise, value) {
+    if (promise._state !== PENDING) {
+      return;
+    }
+
+    promise._result = value;
+    promise._state = FULFILLED;
+
+    if (promise._subscribers.length !== 0) {
+      asap(publish, promise);
+    }
+  }
+
+  function reject(promise, reason) {
+    if (promise._state !== PENDING) {
+      return;
+    }
+    promise._state = REJECTED;
+    promise._result = reason;
+
+    asap(publishRejection, promise);
+  }
+
+  function subscribe(parent, child, onFulfillment, onRejection) {
+    var _subscribers = parent._subscribers;
+    var length = _subscribers.length;
+
+    parent._onerror = null;
+
+    _subscribers[length] = child;
+    _subscribers[length + FULFILLED] = onFulfillment;
+    _subscribers[length + REJECTED] = onRejection;
+
+    if (length === 0 && parent._state) {
+      asap(publish, parent);
+    }
+  }
+
+  function publish(promise) {
+    var subscribers = promise._subscribers;
+    var settled = promise._state;
+
+    if (subscribers.length === 0) {
+      return;
+    }
+
+    var child = undefined,
+        callback = undefined,
+        detail = promise._result;
+
+    for (var i = 0; i < subscribers.length; i += 3) {
+      child = subscribers[i];
+      callback = subscribers[i + settled];
+
+      if (child) {
+        invokeCallback(settled, child, callback, detail);
+      } else {
+        callback(detail);
+      }
+    }
+
+    promise._subscribers.length = 0;
+  }
+
+  function ErrorObject() {
+    this.error = null;
+  }
+
+  var TRY_CATCH_ERROR = new ErrorObject();
+
+  function tryCatch(callback, detail) {
+    try {
+      return callback(detail);
+    } catch (e) {
+      TRY_CATCH_ERROR.error = e;
+      return TRY_CATCH_ERROR;
+    }
+  }
+
+  function invokeCallback(settled, promise, callback, detail) {
+    var hasCallback = isFunction(callback),
+        value = undefined,
+        error = undefined,
+        succeeded = undefined,
+        failed = undefined;
+
+    if (hasCallback) {
+      value = tryCatch(callback, detail);
+
+      if (value === TRY_CATCH_ERROR) {
+        failed = true;
+        error = value.error;
+        value.error = null;
+      } else {
+        succeeded = true;
+      }
+
+      if (promise === value) {
+        reject(promise, cannotReturnOwn());
+        return;
+      }
+    } else {
+      value = detail;
+      succeeded = true;
+    }
+
+    if (promise._state !== PENDING) {
+      // noop
+    } else if (hasCallback && succeeded) {
+      resolve(promise, value);
+    } else if (failed) {
+      reject(promise, error);
+    } else if (settled === FULFILLED) {
+      fulfill(promise, value);
+    } else if (settled === REJECTED) {
+      reject(promise, value);
+    }
+  }
+
+  function initializePromise(promise, resolver) {
+    try {
+      resolver(function resolvePromise(value) {
+        resolve(promise, value);
+      }, function rejectPromise(reason) {
+        reject(promise, reason);
+      });
+    } catch (e) {
+      reject(promise, e);
+    }
+  }
+
+  var id = 0;
+  function nextId() {
+    return id++;
+  }
+
+  function makePromise(promise) {
+    promise[PROMISE_ID] = id++;
+    promise._state = undefined;
+    promise._result = undefined;
+    promise._subscribers = [];
+  }
+
+  function Enumerator$1(Constructor, input) {
+    this._instanceConstructor = Constructor;
+    this.promise = new Constructor(noop);
+
+    if (!this.promise[PROMISE_ID]) {
+      makePromise(this.promise);
+    }
+
+    if (isArray(input)) {
+      this.length = input.length;
+      this._remaining = input.length;
+
+      this._result = new Array(this.length);
+
+      if (this.length === 0) {
+        fulfill(this.promise, this._result);
+      } else {
+        this.length = this.length || 0;
+        this._enumerate(input);
+        if (this._remaining === 0) {
+          fulfill(this.promise, this._result);
+        }
+      }
+    } else {
+      reject(this.promise, validationError());
+    }
+  }
+
+  function validationError() {
+    return new Error('Array Methods must be provided an Array');
+  }
+
+  Enumerator$1.prototype._enumerate = function (input) {
+    for (var i = 0; this._state === PENDING && i < input.length; i++) {
+      this._eachEntry(input[i], i);
+    }
+  };
+
+  Enumerator$1.prototype._eachEntry = function (entry, i) {
+    var c = this._instanceConstructor;
+    var resolve$$1 = c.resolve;
+
+    if (resolve$$1 === resolve$1) {
+      var _then = getThen(entry);
+
+      if (_then === then && entry._state !== PENDING) {
+        this._settledAt(entry._state, i, entry._result);
+      } else if (typeof _then !== 'function') {
+        this._remaining--;
+        this._result[i] = entry;
+      } else if (c === Promise$2) {
+        var promise = new c(noop);
+        handleMaybeThenable(promise, entry, _then);
+        this._willSettleAt(promise, i);
+      } else {
+        this._willSettleAt(new c(function (resolve$$1) {
+          return resolve$$1(entry);
+        }), i);
+      }
+    } else {
+      this._willSettleAt(resolve$$1(entry), i);
+    }
+  };
+
+  Enumerator$1.prototype._settledAt = function (state, i, value) {
+    var promise = this.promise;
+
+    if (promise._state === PENDING) {
+      this._remaining--;
+
+      if (state === REJECTED) {
+        reject(promise, value);
+      } else {
+        this._result[i] = value;
+      }
+    }
+
+    if (this._remaining === 0) {
+      fulfill(promise, this._result);
+    }
+  };
+
+  Enumerator$1.prototype._willSettleAt = function (promise, i) {
+    var enumerator = this;
+
+    subscribe(promise, undefined, function (value) {
+      return enumerator._settledAt(FULFILLED, i, value);
+    }, function (reason) {
+      return enumerator._settledAt(REJECTED, i, reason);
+    });
+  };
+
+  /**
+    `Promise.all` accepts an array of promises, and returns a new promise which
+    is fulfilled with an array of fulfillment values for the passed promises, or
+    rejected with the reason of the first passed promise to be rejected. It casts all
+    elements of the passed iterable to promises as it runs this algorithm.
+  
+    Example:
+  
+    ```javascript
+    let promise1 = resolve(1);
+    let promise2 = resolve(2);
+    let promise3 = resolve(3);
+    let promises = [ promise1, promise2, promise3 ];
+  
+    Promise.all(promises).then(function(array){
+      // The array here would be [ 1, 2, 3 ];
+    });
+    ```
+  
+    If any of the `promises` given to `all` are rejected, the first promise
+    that is rejected will be given as an argument to the returned promises's
+    rejection handler. For example:
+  
+    Example:
+  
+    ```javascript
+    let promise1 = resolve(1);
+    let promise2 = reject(new Error("2"));
+    let promise3 = reject(new Error("3"));
+    let promises = [ promise1, promise2, promise3 ];
+  
+    Promise.all(promises).then(function(array){
+      // Code here never runs because there are rejected promises!
+    }, function(error) {
+      // error.message === "2"
+    });
+    ```
+  
+    @method all
+    @static
+    @param {Array} entries array of promises
+    @param {String} label optional string for labeling the promise.
+    Useful for tooling.
+    @return {Promise} promise that is fulfilled when all `promises` have been
+    fulfilled, or rejected if any of them become rejected.
+    @static
+  */
+  function all$1(entries) {
+    return new Enumerator$1(this, entries).promise;
+  }
+
+  /**
+    `Promise.race` returns a new promise which is settled in the same way as the
+    first passed promise to settle.
+  
+    Example:
+  
+    ```javascript
+    let promise1 = new Promise(function(resolve, reject){
+      setTimeout(function(){
+        resolve('promise 1');
+      }, 200);
+    });
+  
+    let promise2 = new Promise(function(resolve, reject){
+      setTimeout(function(){
+        resolve('promise 2');
+      }, 100);
+    });
+  
+    Promise.race([promise1, promise2]).then(function(result){
+      // result === 'promise 2' because it was resolved before promise1
+      // was resolved.
+    });
+    ```
+  
+    `Promise.race` is deterministic in that only the state of the first
+    settled promise matters. For example, even if other promises given to the
+    `promises` array argument are resolved, but the first settled promise has
+    become rejected before the other promises became fulfilled, the returned
+    promise will become rejected:
+  
+    ```javascript
+    let promise1 = new Promise(function(resolve, reject){
+      setTimeout(function(){
+        resolve('promise 1');
+      }, 200);
+    });
+  
+    let promise2 = new Promise(function(resolve, reject){
+      setTimeout(function(){
+        reject(new Error('promise 2'));
+      }, 100);
+    });
+  
+    Promise.race([promise1, promise2]).then(function(result){
+      // Code here never runs
+    }, function(reason){
+      // reason.message === 'promise 2' because promise 2 became rejected before
+      // promise 1 became fulfilled
+    });
+    ```
+  
+    An example real-world use case is implementing timeouts:
+  
+    ```javascript
+    Promise.race([ajax('foo.json'), timeout(5000)])
+    ```
+  
+    @method race
+    @static
+    @param {Array} promises array of promises to observe
+    Useful for tooling.
+    @return {Promise} a promise which settles in the same way as the first passed
+    promise to settle.
+  */
+  function race$1(entries) {
+    /*jshint validthis:true */
+    var Constructor = this;
+
+    if (!isArray(entries)) {
+      return new Constructor(function (_, reject) {
+        return reject(new TypeError('You must pass an array to race.'));
+      });
+    } else {
+      return new Constructor(function (resolve, reject) {
+        var length = entries.length;
+        for (var i = 0; i < length; i++) {
+          Constructor.resolve(entries[i]).then(resolve, reject);
+        }
+      });
+    }
+  }
+
+  /**
+    `Promise.reject` returns a promise rejected with the passed `reason`.
+    It is shorthand for the following:
+  
+    ```javascript
+    let promise = new Promise(function(resolve, reject){
+      reject(new Error('WHOOPS'));
+    });
+  
+    promise.then(function(value){
+      // Code here doesn't run because the promise is rejected!
+    }, function(reason){
+      // reason.message === 'WHOOPS'
+    });
+    ```
+  
+    Instead of writing the above, your code now simply becomes the following:
+  
+    ```javascript
+    let promise = Promise.reject(new Error('WHOOPS'));
+  
+    promise.then(function(value){
+      // Code here doesn't run because the promise is rejected!
+    }, function(reason){
+      // reason.message === 'WHOOPS'
+    });
+    ```
+  
+    @method reject
+    @static
+    @param {Any} reason value that the returned promise will be rejected with.
+    Useful for tooling.
+    @return {Promise} a promise rejected with the given `reason`.
+  */
+  function reject$1(reason) {
+    /*jshint validthis:true */
+    var Constructor = this;
+    var promise = new Constructor(noop);
+    reject(promise, reason);
+    return promise;
+  }
+
+  function needsResolver() {
+    throw new TypeError('You must pass a resolver function as the first argument to the promise constructor');
+  }
+
+  function needsNew() {
+    throw new TypeError("Failed to construct 'Promise': Please use the 'new' operator, this object constructor cannot be called as a function.");
+  }
+
+  /**
+    Promise objects represent the eventual result of an asynchronous operation. The
+    primary way of interacting with a promise is through its `then` method, which
+    registers callbacks to receive either a promise's eventual value or the reason
+    why the promise cannot be fulfilled.
+  
+    Terminology
+    -----------
+  
+    - `promise` is an object or function with a `then` method whose behavior conforms to this specification.
+    - `thenable` is an object or function that defines a `then` method.
+    - `value` is any legal JavaScript value (including undefined, a thenable, or a promise).
+    - `exception` is a value that is thrown using the throw statement.
+    - `reason` is a value that indicates why a promise was rejected.
+    - `settled` the final resting state of a promise, fulfilled or rejected.
+  
+    A promise can be in one of three states: pending, fulfilled, or rejected.
+  
+    Promises that are fulfilled have a fulfillment value and are in the fulfilled
+    state.  Promises that are rejected have a rejection reason and are in the
+    rejected state.  A fulfillment value is never a thenable.
+  
+    Promises can also be said to *resolve* a value.  If this value is also a
+    promise, then the original promise's settled state will match the value's
+    settled state.  So a promise that *resolves* a promise that rejects will
+    itself reject, and a promise that *resolves* a promise that fulfills will
+    itself fulfill.
+  
+  
+    Basic Usage:
+    ------------
+  
+    ```js
+    let promise = new Promise(function(resolve, reject) {
+      // on success
+      resolve(value);
+  
+      // on failure
+      reject(reason);
+    });
+  
+    promise.then(function(value) {
+      // on fulfillment
+    }, function(reason) {
+      // on rejection
+    });
+    ```
+  
+    Advanced Usage:
+    ---------------
+  
+    Promises shine when abstracting away asynchronous interactions such as
+    `XMLHttpRequest`s.
+  
+    ```js
+    function getJSON(url) {
+      return new Promise(function(resolve, reject){
+        let xhr = new XMLHttpRequest();
+  
+        xhr.open('GET', url);
+        xhr.onreadystatechange = handler;
+        xhr.responseType = 'json';
+        xhr.setRequestHeader('Accept', 'application/json');
+        xhr.send();
+  
+        function handler() {
+          if (this.readyState === this.DONE) {
+            if (this.status === 200) {
+              resolve(this.response);
+            } else {
+              reject(new Error('getJSON: `' + url + '` failed with status: [' + this.status + ']'));
+            }
+          }
+        };
+      });
+    }
+  
+    getJSON('/posts.json').then(function(json) {
+      // on fulfillment
+    }, function(reason) {
+      // on rejection
+    });
+    ```
+  
+    Unlike callbacks, promises are great composable primitives.
+  
+    ```js
+    Promise.all([
+      getJSON('/posts'),
+      getJSON('/comments')
+    ]).then(function(values){
+      values[0] // => postsJSON
+      values[1] // => commentsJSON
+  
+      return values;
+    });
+    ```
+  
+    @class Promise
+    @param {function} resolver
+    Useful for tooling.
+    @constructor
+  */
+  function Promise$2(resolver) {
+    this[PROMISE_ID] = nextId();
+    this._result = this._state = undefined;
+    this._subscribers = [];
+
+    if (noop !== resolver) {
+      typeof resolver !== 'function' && needsResolver();
+      this instanceof Promise$2 ? initializePromise(this, resolver) : needsNew();
+    }
+  }
+
+  Promise$2.all = all$1;
+  Promise$2.race = race$1;
+  Promise$2.resolve = resolve$1;
+  Promise$2.reject = reject$1;
+  Promise$2._setScheduler = setScheduler;
+  Promise$2._setAsap = setAsap;
+  Promise$2._asap = asap;
+
+  Promise$2.prototype = {
+    constructor: Promise$2,
+
+    /**
+      The primary way of interacting with a promise is through its `then` method,
+      which registers callbacks to receive either a promise's eventual value or the
+      reason why the promise cannot be fulfilled.
+    
+      ```js
+      findUser().then(function(user){
+        // user is available
+      }, function(reason){
+        // user is unavailable, and you are given the reason why
+      });
+      ```
+    
+      Chaining
+      --------
+    
+      The return value of `then` is itself a promise.  This second, 'downstream'
+      promise is resolved with the return value of the first promise's fulfillment
+      or rejection handler, or rejected if the handler throws an exception.
+    
+      ```js
+      findUser().then(function (user) {
+        return user.name;
+      }, function (reason) {
+        return 'default name';
+      }).then(function (userName) {
+        // If `findUser` fulfilled, `userName` will be the user's name, otherwise it
+        // will be `'default name'`
+      });
+    
+      findUser().then(function (user) {
+        throw new Error('Found user, but still unhappy');
+      }, function (reason) {
+        throw new Error('`findUser` rejected and we're unhappy');
+      }).then(function (value) {
+        // never reached
+      }, function (reason) {
+        // if `findUser` fulfilled, `reason` will be 'Found user, but still unhappy'.
+        // If `findUser` rejected, `reason` will be '`findUser` rejected and we're unhappy'.
+      });
+      ```
+      If the downstream promise does not specify a rejection handler, rejection reasons will be propagated further downstream.
+    
+      ```js
+      findUser().then(function (user) {
+        throw new PedagogicalException('Upstream error');
+      }).then(function (value) {
+        // never reached
+      }).then(function (value) {
+        // never reached
+      }, function (reason) {
+        // The `PedgagocialException` is propagated all the way down to here
+      });
+      ```
+    
+      Assimilation
+      ------------
+    
+      Sometimes the value you want to propagate to a downstream promise can only be
+      retrieved asynchronously. This can be achieved by returning a promise in the
+      fulfillment or rejection handler. The downstream promise will then be pending
+      until the returned promise is settled. This is called *assimilation*.
+    
+      ```js
+      findUser().then(function (user) {
+        return findCommentsByAuthor(user);
+      }).then(function (comments) {
+        // The user's comments are now available
+      });
+      ```
+    
+      If the assimliated promise rejects, then the downstream promise will also reject.
+    
+      ```js
+      findUser().then(function (user) {
+        return findCommentsByAuthor(user);
+      }).then(function (comments) {
+        // If `findCommentsByAuthor` fulfills, we'll have the value here
+      }, function (reason) {
+        // If `findCommentsByAuthor` rejects, we'll have the reason here
+      });
+      ```
+    
+      Simple Example
+      --------------
+    
+      Synchronous Example
+    
+      ```javascript
+      let result;
+    
+      try {
+        result = findResult();
+        // success
+      } catch(reason) {
+        // failure
+      }
+      ```
+    
+      Errback Example
+    
+      ```js
+      findResult(function(result, err){
+        if (err) {
+          // failure
+        } else {
+          // success
+        }
+      });
+      ```
+    
+      Promise Example;
+    
+      ```javascript
+      findResult().then(function(result){
+        // success
+      }, function(reason){
+        // failure
+      });
+      ```
+    
+      Advanced Example
+      --------------
+    
+      Synchronous Example
+    
+      ```javascript
+      let author, books;
+    
+      try {
+        author = findAuthor();
+        books  = findBooksByAuthor(author);
+        // success
+      } catch(reason) {
+        // failure
+      }
+      ```
+    
+      Errback Example
+    
+      ```js
+    
+      function foundBooks(books) {
+    
+      }
+    
+      function failure(reason) {
+    
+      }
+    
+      findAuthor(function(author, err){
+        if (err) {
+          failure(err);
+          // failure
+        } else {
+          try {
+            findBoooksByAuthor(author, function(books, err) {
+              if (err) {
+                failure(err);
+              } else {
+                try {
+                  foundBooks(books);
+                } catch(reason) {
+                  failure(reason);
+                }
+              }
+            });
+          } catch(error) {
+            failure(err);
+          }
+          // success
+        }
+      });
+      ```
+    
+      Promise Example;
+    
+      ```javascript
+      findAuthor().
+        then(findBooksByAuthor).
+        then(function(books){
+          // found books
+      }).catch(function(reason){
+        // something went wrong
+      });
+      ```
+    
+      @method then
+      @param {Function} onFulfilled
+      @param {Function} onRejected
+      Useful for tooling.
+      @return {Promise}
+    */
+    then: then,
+
+    /**
+      `catch` is simply sugar for `then(undefined, onRejection)` which makes it the same
+      as the catch block of a try/catch statement.
+    
+      ```js
+      function findAuthor(){
+        throw new Error('couldn't find that author');
+      }
+    
+      // synchronous
+      try {
+        findAuthor();
+      } catch(reason) {
+        // something went wrong
+      }
+    
+      // async with promises
+      findAuthor().catch(function(reason){
+        // something went wrong
+      });
+      ```
+    
+      @method catch
+      @param {Function} onRejection
+      Useful for tooling.
+      @return {Promise}
+    */
+    'catch': function _catch(onRejection) {
+      return this.then(null, onRejection);
+    }
+  };
+
+  /*global self*/
+  function polyfill$1() {
+    var local = undefined;
+
+    if (typeof global !== 'undefined') {
+      local = global;
+    } else if (typeof self !== 'undefined') {
+      local = self;
+    } else {
+      try {
+        local = Function('return this')();
+      } catch (e) {
+        throw new Error('polyfill failed because global object is unavailable in this environment');
+      }
+    }
+
+    var P = local.Promise;
+
+    if (P) {
+      var promiseToString = null;
+      try {
+        promiseToString = Object.prototype.toString.call(P.resolve());
+      } catch (e) {
+        // silently ignored
+      }
+
+      if (promiseToString === '[object Promise]' && !P.cast) {
+        return;
+      }
+    }
+
+    local.Promise = Promise$2;
+  }
+
+  // Strange compat..
+  Promise$2.polyfill = polyfill$1;
+  Promise$2.Promise = Promise$2;
+
+  return Promise$2;
+});
+
+//# sourceMappingURL=es6-promise.map
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(8)))
+
+/***/ }),
+/* 19 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(4);
+
+function Rule(templates) {
+  this._field = '';
+  this._value = undefined;
+  this._messages = [];
+  if (templates) {
+    // merge given template and utils.template
+    this.templates = {};
+    Object.keys(utils.templates).forEach(function (key) {
+      this.templates[key] = utils.templates[key];
+    }.bind(this));
+    Object.keys(templates).forEach(function (key) {
+      this.templates[key] = templates[key];
+    }.bind(this));
+  } else {
+    this.templates = utils.templates;
+  }
+}
+
+Rule.prototype.field = function (field) {
+  this._field = field;
+  return this;
+};
+
+Rule.prototype.value = function (value) {
+  this._value = value;
+  return this;
+};
+
+Rule.prototype.custom = function (callback, context) {
+  var message = context ? callback.call(context) : callback();
+  if (message) {
+    if (message.then) {
+      var that = this;
+      message = Promise.resolve(message).then(function (result) {
+        return result;
+      }).catch(function (e) {
+        console.error(e.toString());
+        return that.templates.error;
+      });
+    }
+    this._messages.push(message);
+  }
+  return this;
+};
+
+Rule.prototype._checkValue = function () {
+  if (this._value === undefined) {
+    throw new Error('Validator.value not set');
+  }
+  return this._value;
+};
+
+Rule.prototype.required = function (message) {
+  var value = this._checkValue();
+  if (utils.isEmpty(value)) {
+    this._messages.push(message || this.templates.required);
+  }
+  return this;
+};
+
+Rule.prototype.float = function (message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseFloat(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.float);
+    }
+  }
+  return this;
+};
+
+Rule.prototype.integer = function (message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseInt(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.integer);
+    } else if (number !== Number(value)) {
+      // 2 !=== 2.9
+      this._messages.push(message || this.templates.integer);
+    }
+  }
+  return this;
+};
+
+Rule.prototype.lessThan = function (bound, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseFloat(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.number);
+    } else if (number >= bound) {
+      this._messages.push(message || utils.format(this.templates.lessThan, bound));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.lessThanOrEqualTo = function (bound, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseFloat(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.number);
+    } else if (number > bound) {
+      this._messages.push(message || utils.format(this.templates.lessThanOrEqualTo, bound));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.greaterThan = function (bound, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseFloat(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.number);
+    } else if (number <= bound) {
+      this._messages.push(message || utils.format(this.templates.greaterThan, bound));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.greaterThanOrEqualTo = function (bound, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseFloat(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.number);
+    } else if (number < bound) {
+      this._messages.push(message || utils.format(this.templates.greaterThanOrEqualTo, bound));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.between = function (lowBound, highBound, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var number = parseFloat(value);
+    if (utils.isNaN(number)) {
+      this._messages.push(message || this.templates.number);
+    } else if (number < lowBound || number > highBound) {
+      this._messages.push(message || utils.format(this.templates.between, lowBound, highBound));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.size = function (size, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    if (utils.isArray(value) && value.length != size) {
+      this._messages.push(message || utils.format(this.templates.size, size));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.length = function (length, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var string = String(value);
+    if (string.length !== length) {
+      this._messages.push(message || utils.format(this.templates.length, length));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.minLength = function (length, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var string = String(value);
+    if (string.length < length) {
+      this._messages.push(message || utils.format(this.templates.minLength, length));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.maxLength = function (length, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var string = String(value);
+    if (string.length > length) {
+      this._messages.push(message || utils.format(this.templates.maxLength, length));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.lengthBetween = function (minLength, maxLength, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    var string = String(value);
+    if (string.length < minLength || string.length > maxLength) {
+      this._messages.push(message || utils.format(this.templates.lengthBetween, minLength, maxLength));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.in = function (options, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    if (options.filter(function (option) {
+      return option === value;
+    }).length <= 0) {
+      this._messages.push(message || utils.format(this.templates.in, this.templates.optionCombiner(options)));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.notIn = function (options, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    if (options.filter(function (option) {
+      return option !== value;
+    }).length <= 0) {
+      this._messages.push(message || utils.format(this.templates.notIn, this.templates.optionCombiner(options)));
+    }
+  }
+  return this;
+};
+
+Rule.prototype.match = function (valueToCompare, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    if (value !== valueToCompare) {
+      this._messages.push(message || this.templates.match);
+    }
+  }
+  return this;
+};
+
+Rule.prototype.regex = function (regex, message) {
+  var value = this._checkValue();
+  if (!utils.isEmpty(value)) {
+    if (utils.isString(regex)) {
+      regex = new RegExp(regex);
+    }
+    if (!regex.test(value)) {
+      this._messages.push(message || this.templates.regex);
+    }
+  }
+  return this;
+};
+
+Rule.prototype.digit = function (message) {
+  return this.regex(/^\d*$/, message || this.templates.digit);
+};
+
+Rule.prototype.email = function (message) {
+  return this.regex(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, message || this.templates.email);
+};
+
+Rule.prototype.url = function (message) {
+  return this.regex(/(http|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/, message || this.templates.url);
+};
+
+module.exports = Rule;
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+__webpack_require__(21);
+
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _store = __webpack_require__(19);
+var _store = __webpack_require__(24);
 
 var _store2 = _interopRequireDefault(_store);
 
-var _app = __webpack_require__(42);
+var _app = __webpack_require__(47);
 
 var _app2 = _interopRequireDefault(_app);
 
@@ -11729,40 +13595,14 @@ new _vue2.default({
   components: { App: _app2.default }
 });
 
-//ES6 tests
-/*
-
-function countArguments(...args) {  
-   return args.length;
-}
-// get the number of arguments
-countArguments('welcome', 'to', 'Earth'); // => 3
-
-// destructure an array
-let otherSeasons, autumn;  
-[autumn, ...otherSeasons] = ['autumn', 'winter', 'summer'];
-console.log(otherSeasons);      // => ['winter']  
-
-
-let cold = ['autumn', 'winter'];  
-let warm = ['spring', 'summer'];  
-// construct an array
-console.log([...cold, ...warm]) // => ['autumn', 'winter', 'spring', 'summer']
-
-// function arguments from an array
-cold.push(...warm);  
-console.log(cold);              // => ['autumn', 'winter', 'spring', 'summer']  
-
-*/
-
 /***/ }),
-/* 16 */
+/* 21 */
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
 
 /***/ }),
-/* 17 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -11816,12 +13656,12 @@ exports._unrefActive = exports.active = function (item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(18);
+__webpack_require__(23);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 /***/ }),
-/* 18 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12009,10 +13849,10 @@ exports.clearImmediate = clearImmediate;
     attachTo.setImmediate = setImmediate;
     attachTo.clearImmediate = clearImmediate;
 })(typeof self === "undefined" ? typeof global === "undefined" ? undefined : global : self);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(3)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(3)))
 
 /***/ }),
-/* 19 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12022,27 +13862,27 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _vue = __webpack_require__(8);
+var _vue = __webpack_require__(5);
 
 var _vue2 = _interopRequireDefault(_vue);
 
-var _vuex = __webpack_require__(2);
+var _vuex = __webpack_require__(0);
 
 var _vuex2 = _interopRequireDefault(_vuex);
 
-var _actions = __webpack_require__(20);
+var _actions = __webpack_require__(25);
 
 var actions = _interopRequireWildcard(_actions);
 
-var _getters = __webpack_require__(39);
+var _getters = __webpack_require__(44);
 
 var getters = _interopRequireWildcard(_getters);
 
-var _items = __webpack_require__(40);
+var _items = __webpack_require__(45);
 
 var _items2 = _interopRequireDefault(_items);
 
-var _storageSpaces = __webpack_require__(41);
+var _storageSpaces = __webpack_require__(46);
 
 var _storageSpaces2 = _interopRequireDefault(_storageSpaces);
 
@@ -12062,6 +13902,7 @@ var state = {
   form: {
     shown: false,
     itemFormShown: false,
+    storageListShown: false,
     storageFormShown: false,
     form_mode: 'none'
   },
@@ -12096,6 +13937,9 @@ var mutations = {
   SET_ITEM_FORM_SHOWN: function SET_ITEM_FORM_SHOWN(state, isShown) {
     state.form.itemFormShown = isShown;
   },
+  SET_STORAGE_LIST_SHOWN: function SET_STORAGE_LIST_SHOWN(state, isShown) {
+    state.form.storageListShown = isShown;
+  },
   SET_STORAGE_FORM_SHOWN: function SET_STORAGE_FORM_SHOWN(state, isShown) {
     state.form.storageFormShown = isShown;
   },
@@ -12119,7 +13963,7 @@ exports.default = new _vuex2.default.Store({
 });
 
 /***/ }),
-/* 20 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12128,9 +13972,9 @@ exports.default = new _vuex2.default.Store({
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.close_storage_form = exports.show_storage_form = exports.show_item_form = exports.set_form_mode = exports.open_form = exports.close_form = exports.find_item = exports.set_prompt = exports.login = exports.check_login = undefined;
+exports.close_storage_form = exports.show_storage_form = exports.close_storage_list = exports.show_storage_list = exports.show_item_form = exports.set_form_mode = exports.open_form = exports.close_form = exports.find_item_func = exports.find_item_evoke = exports.find_item = exports.set_prompt = exports.login = exports.check_login = undefined;
 
-var _axios = __webpack_require__(4);
+var _axios = __webpack_require__(9);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -12150,12 +13994,13 @@ var check_login = exports.check_login = function check_login(_ref) {
 };
 var login = exports.login = function login(store, input) {
   _axios2.default.post('/users/login', input).then(function (response) {
-    //console.log(response);
+    console.log(response);
     if (response.data) {
-      set_prompt(store, 'Login Success', false);
+      var data = { message: 'Login Success', error: false };
     } else {
-      set_prompt(store, 'Login Failed', true);
+      var data = { message: 'Login Failed', error: true };
     }
+    set_prompt(store, data);
     check_login(store);
   }).catch(function (error) {
     console.log(error);
@@ -12163,31 +14008,43 @@ var login = exports.login = function login(store, input) {
 };
 
 //PROMPT
-var set_prompt = exports.set_prompt = function set_prompt(_ref2, message, isError) {
+var set_prompt = exports.set_prompt = function set_prompt(_ref2, data) {
   var commit = _ref2.commit;
 
-  if (isError) {
-    commit('SET_ERROR', message);
+  if (data.error) {
+    commit('SET_ERROR', data.message);
   } else {
-    commit('SET_MESSAGE', message);
+    commit('SET_MESSAGE', data.message);
   }
   setTimeout(function () {
     commit('SET_MESSAGE', '');
-  }, 5000);
+  }, 3000);
 };
 
 //FIND
 var find_item = exports.find_item = function find_item(store, e) {
-  if (e.target.value.length > 2) {
-
-    console.log(e.target.value);
-    console.log(store.rootState.items.all);
-
-    var filtered_items = store.rootState.items.all.filter(function (item) {
-      return item.item_name.length > 6;
+  find_item_func(store, e.target.value);
+};
+var find_item_evoke = exports.find_item_evoke = function find_item_evoke(store) {
+  find_item_func(store, document.getElementById('fld_find').value);
+};
+var find_item_func = exports.find_item_func = function find_item_func(store, str_search) {
+  if (str_search.length >= 2) {
+    var array_search_str = str_search.split(' ');
+    array_search_str = array_search_str.filter(function (str) {
+      return str.length > 1;
     });
-    console.log(filtered_items);
-
+    var filtered_items = store.rootState.items.all.filter(function (item) {
+      var str_storage = item.storage_prefix + item.storage_number;
+      var match = true;
+      for (var i = 0; i < array_search_str.length; i++) {
+        var re = new RegExp(array_search_str[i], 'i');
+        if (!item.item_name.match(re) && !item.item_description.match(re) && !str_storage.match(re)) {
+          match = false;
+        }
+      }
+      return match;
+    });
     store.commit('SET_SEARCHING', true);
     store.commit('SET_FILTERED_ITEMS', filtered_items);
   } else {
@@ -12201,6 +14058,7 @@ var close_form = exports.close_form = function close_form(_ref3) {
 
   commit('SET_FORM_SHOWN', false);
   commit('SET_ITEM_FORM_SHOWN', false);
+  commit('SET_STORAGE_LIST_SHOWN', false);
   commit('SET_STORAGE_FORM_SHOWN', false);
   commit('SET_FORM_MODE', 'none');
 };
@@ -12214,35 +14072,51 @@ var set_form_mode = exports.set_form_mode = function set_form_mode(_ref5, mode) 
 
   commit('SET_FORM_MODE', mode);
 };
-var show_item_form = exports.show_item_form = function show_item_form(_ref6) {
+var show_item_form = exports.show_item_form = function show_item_form(store) {
+  set_form_mode(store, 'itemForm');
+  setTimeout(function () {
+    store.commit('SET_ITEM_FORM_SHOWN', true);
+  });
+};
+var show_storage_list = exports.show_storage_list = function show_storage_list(store) {
+  set_form_mode(store, 'storageList');
+  setTimeout(function () {
+    store.commit('SET_ITEM_FORM_SHOWN', false);
+    store.commit('SET_STORAGE_LIST_SHOWN', true);
+  });
+};
+var close_storage_list = exports.close_storage_list = function close_storage_list(store) {
+  set_form_mode(store, 'storageList');
+  setTimeout(function () {
+    store.commit('SET_ITEM_FORM_SHOWN', true);
+    store.commit('SET_STORAGE_LIST_SHOWN', false);
+  });
+};
+var show_storage_form = exports.show_storage_form = function show_storage_form(store) {
+  set_form_mode(store, 'storageForm');
+  setTimeout(function () {
+    store.commit('SET_STORAGE_LIST_SHOWN', false);
+    store.commit('SET_STORAGE_FORM_SHOWN', true);
+  });
+};
+var close_storage_form = exports.close_storage_form = function close_storage_form(_ref6) {
   var commit = _ref6.commit;
 
-  commit('SET_ITEM_FORM_SHOWN', true);
-};
-var show_storage_form = exports.show_storage_form = function show_storage_form(_ref7) {
-  var commit = _ref7.commit;
-
-  commit('SET_ITEM_FORM_SHOWN', false);
-  commit('SET_STORAGE_FORM_SHOWN', true);
-};
-var close_storage_form = exports.close_storage_form = function close_storage_form(_ref8) {
-  var commit = _ref8.commit;
-
-  commit('SET_ITEM_FORM_SHOWN', true);
+  commit('SET_STORAGE_LIST_SHOWN', true);
   commit('SET_STORAGE_FORM_SHOWN', false);
 };
 
 /***/ }),
-/* 21 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
-var bind = __webpack_require__(10);
-var Axios = __webpack_require__(23);
-var defaults = __webpack_require__(5);
+var utils = __webpack_require__(2);
+var bind = __webpack_require__(11);
+var Axios = __webpack_require__(28);
+var defaults = __webpack_require__(10);
 
 /**
  * Create an instance of Axios
@@ -12275,15 +14149,15 @@ axios.create = function create(instanceConfig) {
 };
 
 // Expose Cancel & CancelToken
-axios.Cancel = __webpack_require__(14);
-axios.CancelToken = __webpack_require__(37);
-axios.isCancel = __webpack_require__(13);
+axios.Cancel = __webpack_require__(15);
+axios.CancelToken = __webpack_require__(42);
+axios.isCancel = __webpack_require__(14);
 
 // Expose all/spread
 axios.all = function all(promises) {
   return Promise.all(promises);
 };
-axios.spread = __webpack_require__(38);
+axios.spread = __webpack_require__(43);
 
 module.exports = axios;
 
@@ -12291,7 +14165,7 @@ module.exports = axios;
 module.exports.default = axios;
 
 /***/ }),
-/* 22 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12320,16 +14194,16 @@ function isSlowBuffer(obj) {
 }
 
 /***/ }),
-/* 23 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var defaults = __webpack_require__(5);
-var utils = __webpack_require__(0);
-var InterceptorManager = __webpack_require__(32);
-var dispatchRequest = __webpack_require__(33);
+var defaults = __webpack_require__(10);
+var utils = __webpack_require__(2);
+var InterceptorManager = __webpack_require__(37);
+var dispatchRequest = __webpack_require__(38);
 
 /**
  * Create a new instance of Axios
@@ -12405,13 +14279,13 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = Axios;
 
 /***/ }),
-/* 24 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 module.exports = function normalizeHeaderName(headers, normalizedName) {
   utils.forEach(headers, function processHeader(value, name) {
@@ -12423,13 +14297,13 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
 };
 
 /***/ }),
-/* 25 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var createError = __webpack_require__(12);
+var createError = __webpack_require__(13);
 
 /**
  * Resolve or reject a Promise based on response status.
@@ -12449,7 +14323,7 @@ module.exports = function settle(resolve, reject, response) {
 };
 
 /***/ }),
-/* 26 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12477,13 +14351,13 @@ module.exports = function enhanceError(error, config, code, request, response) {
 };
 
 /***/ }),
-/* 27 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 function encode(val) {
   return encodeURIComponent(val).replace(/%40/gi, '@').replace(/%3A/gi, ':').replace(/%24/g, '$').replace(/%2C/gi, ',').replace(/%20/g, '+').replace(/%5B/gi, '[').replace(/%5D/gi, ']');
@@ -12544,13 +14418,13 @@ module.exports = function buildURL(url, params, paramsSerializer) {
 };
 
 /***/ }),
-/* 28 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 // Headers whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -12600,13 +14474,13 @@ module.exports = function parseHeaders(headers) {
 };
 
 /***/ }),
-/* 29 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 module.exports = utils.isStandardBrowserEnv() ?
 
@@ -12669,7 +14543,7 @@ function nonStandardBrowserEnv() {
 }();
 
 /***/ }),
-/* 30 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12710,13 +14584,13 @@ function btoa(input) {
 module.exports = btoa;
 
 /***/ }),
-/* 31 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 module.exports = utils.isStandardBrowserEnv() ?
 
@@ -12769,13 +14643,13 @@ function nonStandardBrowserEnv() {
 }();
 
 /***/ }),
-/* 32 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 function InterceptorManager() {
   this.handlers = [];
@@ -12827,18 +14701,18 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 module.exports = InterceptorManager;
 
 /***/ }),
-/* 33 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
-var transformData = __webpack_require__(34);
-var isCancel = __webpack_require__(13);
-var defaults = __webpack_require__(5);
-var isAbsoluteURL = __webpack_require__(35);
-var combineURLs = __webpack_require__(36);
+var utils = __webpack_require__(2);
+var transformData = __webpack_require__(39);
+var isCancel = __webpack_require__(14);
+var defaults = __webpack_require__(10);
+var isAbsoluteURL = __webpack_require__(40);
+var combineURLs = __webpack_require__(41);
 
 /**
  * Throws a `Cancel` if cancellation has been requested.
@@ -12900,13 +14774,13 @@ module.exports = function dispatchRequest(config) {
 };
 
 /***/ }),
-/* 34 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var utils = __webpack_require__(0);
+var utils = __webpack_require__(2);
 
 /**
  * Transform the data for a request or a response
@@ -12926,7 +14800,7 @@ module.exports = function transformData(data, headers, fns) {
 };
 
 /***/ }),
-/* 35 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12948,7 +14822,7 @@ module.exports = function isAbsoluteURL(url) {
 };
 
 /***/ }),
-/* 36 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12967,13 +14841,13 @@ module.exports = function combineURLs(baseURL, relativeURL) {
 };
 
 /***/ }),
-/* 37 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var Cancel = __webpack_require__(14);
+var Cancel = __webpack_require__(15);
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -13030,7 +14904,7 @@ CancelToken.source = function source() {
 module.exports = CancelToken;
 
 /***/ }),
-/* 38 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13064,26 +14938,21 @@ module.exports = function spread(callback) {
 };
 
 /***/ }),
-/* 39 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+	value: true
 });
 var getterEagle = exports.getterEagle = function getterEagle(state) {
-  console.log('Getter Eagle');
-  return 123;
-};
-var getterJagure = exports.getterJagure = function getterJagure(state) {
-  console.log('Getter Jagure');
-  return 213;
+	return 'Getter Eagle';
 };
 
 /***/ }),
-/* 40 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13093,7 +14962,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(4);
+var _axios = __webpack_require__(9);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -13106,9 +14975,7 @@ var state = {
 };
 
 var actions = {
-  load_items: function load_items(_ref) {
-    var commit = _ref.commit;
-
+  load_items: function load_items(store) {
     _axios2.default.post('/items/load').then(function (response) {
       if (response.data.length > 0) {
         response.data.map(function (obj) {
@@ -13116,14 +14983,15 @@ var actions = {
           return obj;
         });
         console.log(response.data);
-        commit('LOAD_ITEMS', response.data);
+        store.commit('LOAD_ITEMS', response.data);
+        store.dispatch('find_item_evoke');
       }
     }).catch(function (error) {
       console.log(error);
     });
   },
-  remove_one: function remove_one(_ref2) {
-    var commit = _ref2.commit;
+  remove_one: function remove_one(_ref) {
+    var commit = _ref.commit;
 
     commit('REMOVE_ONE');
   },
@@ -13139,9 +15007,7 @@ var actions = {
     store.commit('SET_ACTIVE_ITEM', item);
     store.dispatch('open_form', store);
   },
-  upload_image: function upload_image(_ref3) {
-    var commit = _ref3.commit;
-
+  upload_image: function upload_image(store) {
     var data = new FormData();
     data.append('files', document.getElementById('fileupload').files[0]);
     _axios2.default.post('/items/image_upload', data, {
@@ -13153,15 +15019,20 @@ var actions = {
       photoPreview.photoId = response.data.files[0].photoId;
       photoPreview.fileName = response.data.files[0].fileName;
       photoPreview.thumbName = response.data.files[0].thumbName;
-      commit('ADD_ACTIVE_ITEM_PHOTO', photoPreview);
-    }).catch(function (err) {
+      store.commit('ADD_ACTIVE_ITEM_PHOTO', photoPreview);
+      var prompt_data = { message: 'Image uploaded successfully.', error: false };
+      store.dispatch('set_prompt', prompt_data);
+    }).catch(function (error) {
       console.log(error);
     });
   },
   item_form_submit: function item_form_submit(store, input) {
+    console.log('submit');
     _axios2.default.post('/items/save', input).then(function (response) {
       store.dispatch('load_items', store);
       store.dispatch('close_form', store);
+      var prompt_data = { message: 'Item saved successfully.', error: false };
+      store.dispatch('set_prompt', prompt_data);
     }).catch(function (error) {
       console.log(error);
     });
@@ -13169,7 +15040,6 @@ var actions = {
 };
 
 var mutations = {
-  //ITEMS
   LOAD_ITEMS: function LOAD_ITEMS(state, items) {
     state.all = items;
   },
@@ -13194,6 +15064,15 @@ var mutations = {
   },
   ADD_ACTIVE_ITEM_PHOTO: function ADD_ACTIVE_ITEM_PHOTO(state, photo) {
     state.active.photos.push(photo);
+  },
+  UPDATE_ACTIVE_STORAGE_ID: function UPDATE_ACTIVE_STORAGE_ID(state, value) {
+    state.active.storage_id = value;
+  },
+  UPDATE_ACTIVE_ITEM_NAME: function UPDATE_ACTIVE_ITEM_NAME(state, value) {
+    state.active.item_name = value;
+  },
+  UPDATE_ACTIVE_ITEM_DESCRIPTION: function UPDATE_ACTIVE_ITEM_DESCRIPTION(state, value) {
+    state.active.item_description = value;
   }
 };
 
@@ -13215,7 +15094,7 @@ exports.default = {
 };
 
 /***/ }),
-/* 41 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13225,7 +15104,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _axios = __webpack_require__(4);
+var _axios = __webpack_require__(9);
 
 var _axios2 = _interopRequireDefault(_axios);
 
@@ -13252,11 +15131,41 @@ var actions = {
     store.commit('SET_ACTIVE_STORAGE', storage);
   },
   add_new_storage: function add_new_storage(store, storage) {
+    store.dispatch('show_storage_form');
     store.commit('ADD_STORAGE');
   },
-  storage_submit: function storage_submit(store, input) {
+  edit_storage: function edit_storage(store) {
+    if (store.state.active.storage_id) {
+      store.dispatch('show_storage_form');
+    }
+  },
+  delete_storage: function delete_storage(store) {
+    if (store.state.active.storage_id) {
+      var r = confirm("Are you sure?");
+      if (r == true) {
+        var input = 'storage_id=' + store.state.active.storage_id;
+        _axios2.default.post('/storage/delete', input).then(function (response) {
+          if (response.data.success) {
+            store.dispatch('load_storage', store);
+          }
+          var prompt_data = { message: response.data.message, error: !response.data.success };
+          store.dispatch('set_prompt', prompt_data);
+        }).catch(function (error) {
+          console.log(error);
+        });
+      }
+    }
+  },
+  save_storage: function save_storage(store, input) {
     _axios2.default.post('/storage/save', input).then(function (response) {
-      store.dispatch('load_storage', store);
+      if (response.data.success) {
+        var prompt_data = { message: 'Storage saved successfully.', error: false };
+        store.dispatch('load_storage', store);
+        store.dispatch('close_storage_form', store);
+      } else {
+        var prompt_data = { message: response.data.message, error: true };
+      }
+      store.dispatch('set_prompt', prompt_data);
     }).catch(function (error) {
       console.log(error);
     });
@@ -13269,6 +15178,9 @@ var mutations = {
   },
   SET_ACTIVE_STORAGE: function SET_ACTIVE_STORAGE(state, storage) {
     state.active = storage;
+  },
+  UPDATE_ACTIVE_STORAGE_NAME: function UPDATE_ACTIVE_STORAGE_NAME(state, storage_name) {
+    state.active.storage_name = storage_name;
   },
   ADD_STORAGE: function ADD_STORAGE(state) {
     var empty_storage = {
@@ -13289,13 +15201,13 @@ exports.default = {
 };
 
 /***/ }),
-/* 42 */
+/* 47 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_app_vue__ = __webpack_require__(43);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_28960a80_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_app_vue__ = __webpack_require__(77);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_app_vue__ = __webpack_require__(48);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_28960a80_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_app_vue__ = __webpack_require__(92);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -13341,18 +15253,18 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 43 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__login_vue__ = __webpack_require__(44);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__find_vue__ = __webpack_require__(47);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__prompt_vue__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__dashboard_vue__ = __webpack_require__(53);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__dashboard_forms_vue__ = __webpack_require__(62);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__bottom_widgets_vue__ = __webpack_require__(74);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__login_vue__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__find_vue__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__prompt_vue__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__dashboard_vue__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__dashboard_forms_vue__ = __webpack_require__(67);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__bottom_widgets_vue__ = __webpack_require__(89);
 //
 //
 //
@@ -13386,12 +15298,12 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 44 */
+/* 49 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_login_vue__ = __webpack_require__(45);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_51760648_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_login_vue__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_login_vue__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_51760648_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_login_vue__ = __webpack_require__(51);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -13437,15 +15349,15 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 45 */
+/* 50 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios__ = __webpack_require__(9);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_axios__);
 //
 //
@@ -13491,7 +15403,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 46 */
+/* 51 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13610,12 +15522,12 @@ if (false) {
 }
 
 /***/ }),
-/* 47 */
+/* 52 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_find_vue__ = __webpack_require__(48);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f732e2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_find_vue__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_find_vue__ = __webpack_require__(53);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_1f732e2a_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_find_vue__ = __webpack_require__(54);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -13661,11 +15573,11 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 48 */
+/* 53 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuex__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -13693,7 +15605,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 49 */
+/* 54 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13744,12 +15656,12 @@ if (false) {
 }
 
 /***/ }),
-/* 50 */
+/* 55 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_prompt_vue__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_f5f8dbd6_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_prompt_vue__ = __webpack_require__(52);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_prompt_vue__ = __webpack_require__(56);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_f5f8dbd6_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_prompt_vue__ = __webpack_require__(57);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -13795,11 +15707,11 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 51 */
+/* 56 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuex__);
 //
 //
@@ -13822,7 +15734,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 52 */
+/* 57 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -13862,12 +15774,12 @@ if (false) {
 }
 
 /***/ }),
-/* 53 */
+/* 58 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_dashboard_vue__ = __webpack_require__(54);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3697b873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_dashboard_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_dashboard_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3697b873_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_dashboard_vue__ = __webpack_require__(66);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -13913,13 +15825,13 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 54 */
+/* 59 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dashboard_items_vue__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__dashboard_items_vue__ = __webpack_require__(60);
 //
 //
 //
@@ -13956,12 +15868,12 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 55 */
+/* 60 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_items_vue__ = __webpack_require__(56);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a69716b8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_items_vue__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_items_vue__ = __webpack_require__(61);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_a69716b8_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_items_vue__ = __webpack_require__(65);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -14007,12 +15919,12 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 56 */
+/* 61 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__item_vue__ = __webpack_require__(57);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__item_vue__ = __webpack_require__(62);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuex__);
 //
 //
@@ -14035,12 +15947,12 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 57 */
+/* 62 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_item_vue__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ebe385f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_item_vue__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_item_vue__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_2ebe385f_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_item_vue__ = __webpack_require__(64);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -14086,11 +15998,11 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 58 */
+/* 63 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuex__);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -14123,7 +16035,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 });
 
 /***/ }),
-/* 59 */
+/* 64 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14174,7 +16086,7 @@ if (false) {
 }
 
 /***/ }),
-/* 60 */
+/* 65 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14209,7 +16121,7 @@ if (false) {
 }
 
 /***/ }),
-/* 61 */
+/* 66 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14249,12 +16161,12 @@ if (false) {
 }
 
 /***/ }),
-/* 62 */
+/* 67 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_forms_vue__ = __webpack_require__(63);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cf9b6cda_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_forms_vue__ = __webpack_require__(73);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_forms_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_cf9b6cda_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_forms_vue__ = __webpack_require__(88);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -14300,16 +16212,17 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 63 */
+/* 68 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_constants_constants__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_constants_constants__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__item_form_vue__ = __webpack_require__(64);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__storage_form_vue__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__item_form_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__storage_list_vue__ = __webpack_require__(82);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__storage_form_vue__ = __webpack_require__(85);
 //
 //
 //
@@ -14321,6 +16234,8 @@ if (false) {(function () {
 //
 //
 //
+//
+
 
 
 
@@ -14340,17 +16255,18 @@ if (false) {(function () {
 	methods: Object(__WEBPACK_IMPORTED_MODULE_1_vuex__["mapActions"])(['show_item_form', 'close_form']),
 	components: {
 		ItemForm: __WEBPACK_IMPORTED_MODULE_2__item_form_vue__["a" /* default */],
-		StorageForm: __WEBPACK_IMPORTED_MODULE_3__storage_form_vue__["a" /* default */]
+		StorageList: __WEBPACK_IMPORTED_MODULE_3__storage_list_vue__["a" /* default */],
+		StorageForm: __WEBPACK_IMPORTED_MODULE_4__storage_form_vue__["a" /* default */]
 	}
 });
 
 /***/ }),
-/* 64 */
+/* 69 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_item_form_vue__ = __webpack_require__(65);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_560a3f22_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_item_form_vue__ = __webpack_require__(69);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_item_form_vue__ = __webpack_require__(70);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_560a3f22_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_item_form_vue__ = __webpack_require__(81);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -14396,17 +16312,26 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 65 */
+/* 70 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuex__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__photo_preview_vue__ = __webpack_require__(66);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vuex__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__photo_preview_vue__ = __webpack_require__(71);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_simple_vue_validator__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
 //
 //
 //
@@ -14456,22 +16381,22 @@ if (false) {(function () {
 
 
 
+
+
+
+var Validator = __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default.a.Validator;
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default.a);
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  mixins: [__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default.a],
-  computed: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapState"])({
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default.a],
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapState"])({
     showItemForm: state => state.form.itemFormShown,
-
     storageSpacesAll: state => state.storageSpaces.all,
-
-    storage_id: state => state.items.active.storage_id,
     photoPreviews: state => state.items.active.photos,
     itemId: state => state.items.active.item_id,
-    itemName: state => state.items.active.item_name,
-    itemDescription: state => state.items.active.item_description,
 
     itemFormTransition: state => {
-      if (state.form.form_mode == 'none') {
+      if (state.form.form_mode == 'itemForm') {
         return 'slideUp';
       } else {
         return 'slideLeft';
@@ -14484,20 +16409,59 @@ if (false) {(function () {
         return [];
       }
     }
+  }), Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapGetters"])([]), {
+    storage_id: {
+      get() {
+        return this.$store.state.items.active.storage_id;
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_STORAGE_ID', value);
+      }
+    },
+    itemName: {
+      get() {
+        return this.$store.state.items.active.item_name;
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_ITEM_NAME', value);
+      }
+    },
+    itemDescription: {
+      get() {
+        return this.$store.state.items.active.item_description;
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_ITEM_DESCRIPTION', value);
+      }
+    }
   }),
-  methods: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['set_form_mode', 'show_storage_form', 'upload_image', 'item_form_submit']),
+  validators: {
+    itemName: function (value) {
+      return Validator.value(value).required();
+    }
+  },
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapActions"])(['show_storage_list', 'upload_image', 'item_form_submit', 'close_form']), {
+    form_validate: function () {
+      var parent = this;
+      this.$validate().then(function (success) {
+        if (success) {
+          parent.item_form_submit(parent.formToString('itemForm'));
+        }
+      });
+    }
+  }),
   components: {
-    PhotoPreview: __WEBPACK_IMPORTED_MODULE_3__photo_preview_vue__["a" /* default */]
+    PhotoPreview: __WEBPACK_IMPORTED_MODULE_4__photo_preview_vue__["a" /* default */]
   }
 });
 
 /***/ }),
-/* 66 */
+/* 71 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_photo_preview_vue__ = __webpack_require__(67);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3388b591_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_photo_preview_vue__ = __webpack_require__(68);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_photo_preview_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_3388b591_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_photo_preview_vue__ = __webpack_require__(73);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -14543,7 +16507,7 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 67 */
+/* 72 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14556,7 +16520,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 68 */
+/* 73 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14585,7 +16549,472 @@ if (false) {
 }
 
 /***/ }),
-/* 69 */
+/* 74 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var pSlice = Array.prototype.slice;
+var objectKeys = __webpack_require__(76);
+var isArguments = __webpack_require__(77);
+
+var deepEqual = module.exports = function (actual, expected, opts) {
+  if (!opts) opts = {};
+  // 7.1. All identical values are equivalent, as determined by ===.
+  if (actual === expected) {
+    return true;
+  } else if (actual instanceof Date && expected instanceof Date) {
+    return actual.getTime() === expected.getTime();
+
+    // 7.3. Other pairs that do not both pass typeof value == 'object',
+    // equivalence is determined by ==.
+  } else if (!actual || !expected || (typeof actual === 'undefined' ? 'undefined' : _typeof(actual)) != 'object' && (typeof expected === 'undefined' ? 'undefined' : _typeof(expected)) != 'object') {
+    return opts.strict ? actual === expected : actual == expected;
+
+    // 7.4. For all other Object pairs, including Array objects, equivalence is
+    // determined by having the same number of owned properties (as verified
+    // with Object.prototype.hasOwnProperty.call), the same set of keys
+    // (although not necessarily the same order), equivalent values for every
+    // corresponding key, and an identical 'prototype' property. Note: this
+    // accounts for both named and indexed properties on Arrays.
+  } else {
+    return objEquiv(actual, expected, opts);
+  }
+};
+
+function isUndefinedOrNull(value) {
+  return value === null || value === undefined;
+}
+
+function isBuffer(x) {
+  if (!x || (typeof x === 'undefined' ? 'undefined' : _typeof(x)) !== 'object' || typeof x.length !== 'number') return false;
+  if (typeof x.copy !== 'function' || typeof x.slice !== 'function') {
+    return false;
+  }
+  if (x.length > 0 && typeof x[0] !== 'number') return false;
+  return true;
+}
+
+function objEquiv(a, b, opts) {
+  var i, key;
+  if (isUndefinedOrNull(a) || isUndefinedOrNull(b)) return false;
+  // an identical 'prototype' property.
+  if (a.prototype !== b.prototype) return false;
+  //~~~I've managed to break Object.keys through screwy arguments passing.
+  //   Converting to array solves the problem.
+  if (isArguments(a)) {
+    if (!isArguments(b)) {
+      return false;
+    }
+    a = pSlice.call(a);
+    b = pSlice.call(b);
+    return deepEqual(a, b, opts);
+  }
+  if (isBuffer(a)) {
+    if (!isBuffer(b)) {
+      return false;
+    }
+    if (a.length !== b.length) return false;
+    for (i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false;
+    }
+    return true;
+  }
+  try {
+    var ka = objectKeys(a),
+        kb = objectKeys(b);
+  } catch (e) {
+    //happens when one is a string literal and the other isn't
+    return false;
+  }
+  // having the same number of owned properties (keys incorporates
+  // hasOwnProperty)
+  if (ka.length != kb.length) return false;
+  //the same set of keys (although not necessarily the same order),
+  ka.sort();
+  kb.sort();
+  //~~~cheap key test
+  for (i = ka.length - 1; i >= 0; i--) {
+    if (ka[i] != kb[i]) return false;
+  }
+  //equivalent values for every corresponding key, and
+  //~~~possibly expensive deep test
+  for (i = ka.length - 1; i >= 0; i--) {
+    key = ka[i];
+    if (!deepEqual(a[key], b[key], opts)) return false;
+  }
+  return (typeof a === 'undefined' ? 'undefined' : _typeof(a)) === (typeof b === 'undefined' ? 'undefined' : _typeof(b));
+}
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+exports = module.exports = typeof Object.keys === 'function' ? Object.keys : shim;
+
+exports.shim = shim;
+function shim(obj) {
+  var keys = [];
+  for (var key in obj) {
+    keys.push(key);
+  }return keys;
+}
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var supportsArgumentsClass = function () {
+  return Object.prototype.toString.call(arguments);
+}() == '[object Arguments]';
+
+exports = module.exports = supportsArgumentsClass ? supported : unsupported;
+
+exports.supported = supported;
+function supported(object) {
+  return Object.prototype.toString.call(object) == '[object Arguments]';
+};
+
+exports.unsupported = unsupported;
+function unsupported(object) {
+  return object && (typeof object === 'undefined' ? 'undefined' : _typeof(object)) == 'object' && typeof object.length == 'number' && Object.prototype.hasOwnProperty.call(object, 'callee') && !Object.prototype.propertyIsEnumerable.call(object, 'callee') || false;
+};
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  error: 'Error.',
+  required: 'Required.',
+  float: 'Must be number.',
+  integer: 'Must be integer.',
+  number: 'Must be number.',
+  lessThan: 'Must less than {0}.',
+  lessThanOrEqualTo: 'Must less than or equal to {0}.',
+  greaterThan: 'Must greater than {0}.',
+  greaterThanOrEqualTo: 'Must greater than or equal to {0}.',
+  between: 'Must between {0} and {1}.',
+  size: 'Size must be {0}.',
+  length: 'Length must be {0}.',
+  minLength: 'Must have {0} characters at least.',
+  maxLength: 'Must have {0} characters at most.',
+  lengthBetween: 'Length must between {0} and {1}.',
+  in: 'Must be {0}.',
+  notIn: 'Must not be {0}.',
+  match: 'Not matched.',
+  regex: 'Invalid format.',
+  digit: 'Must be digit.',
+  email: 'Invalid email.',
+  url: 'Invalid url.',
+  optionCombiner: function optionCombiner(options) {
+    if (options.length > 2) {
+      options = [options.slice(0, options.length - 1).join(', '), options[options.length - 1]];
+    }
+    return options.join(' or ');
+  }
+};
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(4);
+var Rule = __webpack_require__(19);
+
+var Validator = newValidator();
+
+Validator.create = function (options) {
+  return newValidator(options);
+};
+
+function newValidator(options) {
+  options = options || {};
+  var validator = {};
+
+  // clone methods from Rule to validator
+  Object.keys(Rule.prototype).forEach(function (methodName) {
+    validator[methodName] = function () {
+      var rule = new Rule(options.templates);
+      return rule[methodName].apply(rule, arguments);
+    };
+  });
+
+  validator.isEmpty = utils.isEmpty;
+
+  validator.format = utils.format;
+
+  return validator;
+}
+
+module.exports = Validator;
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var utils = __webpack_require__(4);
+var ValidationBag = __webpack_require__(17);
+
+var mixin = {
+
+  Promise: null,
+
+  created: function created() {
+    this.$setValidators(this.$options.validators);
+
+    if (this.validation) {
+      // set vm to validation
+      this.validation._setVM(this);
+    }
+  },
+
+  beforeDestroy: function beforeDestroy() {
+    unwatch(this.$options.validatorsUnwatchCallbacks);
+  },
+
+  data: function data() {
+    if (this.$options.validators) {
+      return {
+        validation: new ValidationBag()
+      };
+    }
+    return {};
+  },
+
+  methods: {
+    $setValidators: function $setValidators(validators) {
+      unwatch(this.$options.validatorsUnwatchCallbacks);
+      // validate methods contains all application validate codes
+      var validateMethods = {};
+      this.$options.validateMethods = validateMethods;
+      var unwatchCallbacks = [];
+      this.$options.validatorsUnwatchCallbacks = unwatchCallbacks;
+      // generate validate methods and watch properties change for validators
+      if (validators) {
+        Object.keys(validators).forEach(function (key) {
+          var properties = key.split(',');
+          properties = properties.map(function (property) {
+            return property.trim();
+          });
+          var getters = properties.map(function (property) {
+            return generateGetter(this, property);
+          }, this);
+          var validator = validators[key];
+          var options = {};
+          if (!utils.isFunction(validator)) {
+            options = utils.omit(validator, 'validator');
+            validator = validator.validator;
+          }
+          if (options.cache) {
+            // cache the validation result, so that async validator can be fast when submitting the form
+            var option = options.cache === 'last' ? 'last' : 'all';
+            validator = cache(validator, option);
+          }
+          var validation = this.validation;
+          var validateMethod = function () {
+            if (utils.mode === 'conservative' && !validation.activated) {
+              // do nothing if in conservative mode and $validate() method is not called before
+              return getPromise().resolve(false);
+            }
+            var args = getters.map(function (getter) {
+              return getter();
+            });
+            var rule = validator.apply(this, args);
+            if (rule) {
+              if (!rule._field) {
+                // field defaults to the first property
+                rule.field(properties[0]);
+              }
+              return this.validation.checkRule(rule);
+            } else {
+              return getPromise().resolve(false);
+            }
+          }.bind(this);
+
+          // add to validate method list
+          validateMethods[properties[0]] = validateMethod;
+
+          // watch change and invoke validate method
+          var validateMethodForWatch = validateMethod;
+          if (options.debounce) {
+            // TODO what if custom field name is used?
+            var decoratedValidateMethod = function () {
+              if (decoratedValidateMethod.sessionId !== this.validation.sessionId) {
+                // skip validation if it's reset before
+                return getPromise().resolve(false);
+              }
+              return validateMethod.apply(this, arguments);
+            }.bind(this);
+            var debouncedValidateMethod = utils.debounce(decoratedValidateMethod, parseInt(options.debounce));
+            var field = properties[0];
+            validateMethodForWatch = function () {
+              // eagerly resetting passed flag if debouncing is used.
+              this.validation.resetPassed(field);
+              // store sessionId
+              decoratedValidateMethod.sessionId = this.validation.sessionId;
+              debouncedValidateMethod.apply(this, arguments);
+            }.bind(this);
+          }
+          if (utils.mode !== 'manual') {
+            // have to call $validate() to trigger validation in manual mode, so don't watch,
+            watchProperties(this, properties, validateMethodForWatch).forEach(function (unwatch) {
+              unwatchCallbacks.push(unwatch);
+            });
+          }
+        }, this);
+      }
+    },
+    $validate: function $validate(fields) {
+      if (this.validation._validate) {
+        return this.validation._validate;
+      }
+      this.validation.activated = true;
+      var validateMethods = this.$options.validateMethods;
+      if (utils.isUndefined(fields)) {
+        validateMethods = Object.keys(validateMethods).map(function (key) {
+          return validateMethods[key];
+        });
+      } else {
+        fields = utils.isArray(fields) ? fields : [fields];
+        validateMethods = fields.map(function (field) {
+          return validateMethods[field];
+        });
+      }
+      if (utils.isEmpty(validateMethods)) {
+        return getPromise().resolve(true);
+      } else {
+        var always = function () {
+          this.validation._validate = null;
+        }.bind(this);
+        this.validation._validate = getPromise().all(validateMethods.map(function (validateMethod) {
+          return validateMethod();
+        })).then(function (results) {
+          always();
+          return results.filter(function (result) {
+            return !!result;
+          }).length <= 0;
+        }.bind(this)).catch(function (e) {
+          always();
+          throw e;
+        });
+        return this.validation._validate;
+      }
+    }
+  }
+};
+
+function unwatch(list) {
+  if (list) {
+    list.forEach(function (unwatch) {
+      unwatch();
+    });
+  }
+}
+
+function generateGetter(vm, property) {
+  var names = property.split('.');
+  return function () {
+    var value = vm;
+    for (var i = 0; i < names.length; i++) {
+      if (utils.isNull(value) || utils.isUndefined(value)) {
+        break;
+      }
+      value = value[names[i]];
+    }
+    return value;
+  };
+}
+
+function watchProperties(vm, properties, callback) {
+  return properties.map(function (property) {
+    return vm.$watch(property, function () {
+      vm.validation.setTouched(property);
+      callback.call();
+    });
+  });
+}
+
+function cache(validator, option) {
+  return function () {
+    var cache = validator.cache;
+    if (!cache) {
+      cache = [];
+      validator.cache = cache;
+    }
+    var args = Array.prototype.slice.call(arguments);
+    var cachedResult = findInCache(cache, args);
+    if (!utils.isUndefined(cachedResult)) {
+      return cachedResult;
+    }
+    var result = validator.apply(this, args);
+    if (!utils.isUndefined(result)) {
+      if (result.then) {
+        return result.tab(function (promiseResult) {
+          if (!utils.isUndefined(promiseResult)) {
+            if (option !== 'all') {
+              cache.splice(0, cache.length);
+            }
+            cache.push({ args: args, result: promiseResult });
+          }
+        });
+      } else {
+        if (option !== 'all') {
+          cache.splice(0, cache.length);
+        }
+        cache.push({ args: args, result: result });
+        return result;
+      }
+    }
+  };
+}
+
+function getPromise() {
+  if (mixin.Promise) {
+    return mixin.Promise;
+  }
+  return __webpack_require__(18).Promise;
+}
+
+function findInCache(cache, args) {
+  var items = cache.filter(function (item) {
+    return utils.isEqual(args, item.args);
+  });
+  if (!utils.isEmpty(items)) {
+    return items[0].result;
+  }
+}
+
+module.exports = mixin;
+
+/***/ }),
+/* 81 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14593,153 +17022,205 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "transition",
-    {
-      attrs: { name: _vm.itemFormTransition },
-      on: {
-        "after-enter": function($event) {
-          _vm.set_form_mode("item")
-        }
-      }
-    },
-    [
-      _vm.showItemForm
-        ? _c("div", { staticClass: "pure-g", attrs: { id: "item-add" } }, [
-            _c("div", { staticClass: "box" }, [
-              _c("div", { staticClass: "pure-u-5-5" }, [
-                _c("form", { attrs: { id: "upload-form" } }, [
+  return _c("transition", { attrs: { name: _vm.itemFormTransition } }, [
+    _vm.showItemForm
+      ? _c("div", { staticClass: "pure-g", attrs: { id: "item-add" } }, [
+          _c("div", { staticClass: "box" }, [
+            _c("div", { staticClass: "pure-u-5-5" }, [
+              _c("div", {
+                staticClass: "btn x align-right",
+                on: { click: _vm.close_form }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "pure-u-5-5" }, [
+              _c("form", { attrs: { id: "upload-form" } }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "btn-photo",
+                    attrs: { id: "lbl-fileupload", for: "fileupload" }
+                  },
+                  [_vm._v("Upload photos...")]
+                ),
+                _vm._v(" "),
+                _c("input", {
+                  staticStyle: { display: "none" },
+                  attrs: { id: "fileupload", type: "file", name: "files" },
+                  on: { change: _vm.upload_image }
+                })
+              ])
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: { id: "itemForm" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    _vm.form_validate($event)
+                  }
+                }
+              },
+              [
+                _c(
+                  "div",
+                  { staticClass: "pure-u-5-5" },
+                  [
+                    _vm._l(_vm.photoPreviews, function(photo) {
+                      return _c("photo-preview", {
+                        key: photo.photo_id,
+                        attrs: { photodata: photo }
+                      })
+                    }),
+                    _vm._v(" "),
+                    _c("input", {
+                      attrs: { type: "hidden", name: "uploaded_files" },
+                      domProps: { value: _vm.uploadedFiles }
+                    })
+                  ],
+                  2
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "pure-u-5-5" }, [
+                  _c("label", [
+                    _vm._v("Storage "),
+                    _c("div", {
+                      staticClass: "btn sm cog",
+                      on: { click: _vm.show_storage_list }
+                    })
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "pure-u-5-5" }, [
                   _c(
-                    "label",
+                    "select",
                     {
-                      staticClass: "btn btn-photo",
-                      attrs: { id: "lbl-fileupload", for: "fileupload" }
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.storage_id,
+                          expression: "storage_id"
+                        }
+                      ],
+                      attrs: { id: "storage_id", name: "storage_id" },
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.storage_id = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
                     },
-                    [_vm._v("Upload photos...")]
-                  ),
+                    _vm._l(_vm.storageSpacesAll, function(storage) {
+                      return _c(
+                        "option",
+                        {
+                          key: storage.storage_id,
+                          domProps: { value: storage.storage_id }
+                        },
+                        [
+                          _vm._v(
+                            "\n              " +
+                              _vm._s(
+                                storage.storage_prefix +
+                                  storage.storage_number +
+                                  ": " +
+                                  storage.storage_name
+                              ) +
+                              " \n            "
+                          )
+                        ]
+                      )
+                    })
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "pure-u-5-5" }, [
+                  _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
                   _vm._v(" "),
                   _c("input", {
-                    staticStyle: { display: "none" },
-                    attrs: { id: "fileupload", type: "file", name: "files" },
-                    on: { change: _vm.upload_image }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _c(
-                "form",
-                {
-                  attrs: { id: "item-form" },
-                  on: {
-                    submit: function($event) {
-                      $event.preventDefault()
-                      _vm.item_form_submit(_vm.formToString("item-form"))
-                    }
-                  }
-                },
-                [
-                  _c(
-                    "div",
-                    { staticClass: "pure-u-5-5" },
-                    [
-                      _vm._l(_vm.photoPreviews, function(photo) {
-                        return _c("photo-preview", {
-                          key: photo.photo_id,
-                          attrs: { photodata: photo }
-                        })
-                      }),
-                      _vm._v(" "),
-                      _c("input", {
-                        attrs: { type: "hidden", name: "uploaded_files" },
-                        domProps: { value: _vm.uploadedFiles }
-                      })
+                    attrs: { type: "hidden", id: "item_id", name: "item_id" },
+                    domProps: { value: _vm.itemId }
+                  }),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.itemName,
+                        expression: "itemName"
+                      }
                     ],
-                    2
-                  ),
+                    class: { error: _vm.validation.hasError("itemName") },
+                    attrs: { type: "text", id: "name", name: "name" },
+                    domProps: { value: _vm.itemName },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.itemName = $event.target.value
+                      }
+                    }
+                  }),
                   _vm._v(" "),
-                  _c("div", { staticClass: "pure-u-5-5" }, [
-                    _c("label", [
-                      _vm._v("Storage "),
-                      _c("div", {
-                        staticClass: "btn-sm cog",
-                        on: { click: _vm.show_storage_form }
-                      })
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "pure-u-5-5" }, [
-                    _c(
-                      "select",
-                      {
-                        attrs: { id: "storage_id", name: "storage_id" },
-                        domProps: { value: _vm.storage_id }
-                      },
-                      _vm._l(_vm.storageSpacesAll, function(storage) {
-                        return _c(
-                          "option",
-                          {
-                            key: storage.storage_id,
-                            domProps: { value: storage.storage_id }
-                          },
-                          [
-                            _vm._v(
-                              "\n              " +
-                                _vm._s(
-                                  storage.storage_prefix +
-                                    storage.storage_number +
-                                    ": " +
-                                    storage.storage_name
-                                ) +
-                                " \n            "
-                            )
-                          ]
-                        )
-                      })
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "pure-u-5-5" }, [
-                    _c("label", { attrs: { for: "name" } }, [_vm._v("Name")]),
-                    _vm._v(" "),
-                    _c("input", {
-                      attrs: { type: "hidden", id: "item_id", name: "item_id" },
-                      domProps: { value: _vm.itemId }
-                    }),
-                    _vm._v(" "),
-                    _c("input", {
-                      class: { error: false },
-                      attrs: { type: "text", id: "name", name: "name" },
-                      domProps: { value: _vm.itemName }
-                    }),
-                    _vm._v(" "),
-                    _c("span", { staticClass: "error" })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "pure-u-5-5" }, [
-                    _c("label", { attrs: { for: "description" } }, [
-                      _vm._v("Description")
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "textarea",
-                      {
-                        attrs: { id: "description", name: "description" },
-                        domProps: { value: _vm.itemDescription }
-                      },
-                      [_vm._v(_vm._s(_vm.itemDescription))]
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "pure-u-5-5" }, [
-                    _c("input", { attrs: { type: "submit", value: "SAVE" } })
+                  _c("div", { staticClass: "message" }, [
+                    _vm._v(_vm._s(_vm.validation.firstError("itemName")))
                   ])
-                ]
-              )
-            ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "pure-u-5-5" }, [
+                  _c("label", { attrs: { for: "description" } }, [
+                    _vm._v("Description")
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "textarea",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.itemDescription,
+                          expression: "itemDescription"
+                        }
+                      ],
+                      attrs: { id: "description", name: "description" },
+                      domProps: { value: _vm.itemDescription },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.itemDescription = $event.target.value
+                        }
+                      }
+                    },
+                    [_vm._v(_vm._s(_vm.itemDescription))]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "pure-u-5-5" }, [
+                  _c("input", { attrs: { type: "submit", value: "SAVE" } })
+                ])
+              ]
+            )
           ])
-        : _vm._e()
-    ]
-  )
+        ])
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -14753,12 +17234,257 @@ if (false) {
 }
 
 /***/ }),
-/* 70 */
+/* 82 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_storage_form_vue__ = __webpack_require__(71);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_10eff0a2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_storage_form_vue__ = __webpack_require__(72);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_storage_list_vue__ = __webpack_require__(83);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_44e9177c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_storage_list_vue__ = __webpack_require__(84);
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+
+/* template */
+
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_storage_list_vue__["a" /* default */],
+  __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_44e9177c_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_storage_list_vue__["a" /* default */],
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "assets/js/vue/dashboard/storage-list.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {  return key !== "default" && key.substr(0, 2) !== "__"})) {  console.error("named exports are not supported in *.vue files.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-44e9177c", Component.options)
+  } else {
+    hotAPI.reload("data-v-44e9177c", Component.options)
+' + '  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+/* harmony default export */ __webpack_exports__["a"] = (Component.exports);
+
+
+/***/ }),
+/* 83 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuex__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  data: function () {
+    return {
+      alphabets: Object(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__["alphabets"])(),
+      numbers: Object(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__["numbers"])()
+    };
+  },
+  computed: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapState"])({
+    showStorageList: state => state.form.storageListShown,
+    storageSpacesAll: state => state.storageSpaces.all,
+    activeStorage: state => state.storageSpaces.active,
+    activeStorageSelected: state => state.storageSpaces.active.storage_id,
+
+    storageListTransition: state => {
+      if (state.form.form_mode == 'storageForm') {
+        return 'slideLeft';
+      } else {
+        return 'slideRight';
+      }
+    }
+
+  }),
+  methods: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['set_active_storage', 'add_new_storage', 'edit_storage', 'storage_submit', 'close_storage_list', 'delete_storage']),
+  created: function () {
+    console.log(this.$store.state.storageSpaces);
+  }
+});
+
+/***/ }),
+/* 84 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("transition", { attrs: { name: _vm.storageListTransition } }, [
+    _vm.showStorageList
+      ? _c("div", { staticClass: "pure-g", attrs: { id: "item-storage" } }, [
+          _c("div", { staticClass: "box" }, [
+            _c(
+              "form",
+              {
+                attrs: { id: "storage-list" },
+                on: {
+                  submit: function($event) {
+                    $event.preventDefault()
+                    _vm.storage_submit(_vm.formToString("storage-form"))
+                  }
+                }
+              },
+              [
+                _c("div", { staticClass: "pure-u-5-5" }, [
+                  _c("div", {
+                    staticClass: "btn back align-right",
+                    on: { click: _vm.close_storage_list }
+                  })
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "pure-u-5-5" },
+                  [
+                    _c(
+                      "label",
+                      { staticClass: "first", attrs: { for: "name" } },
+                      [_vm._v("Storage Spaces")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "transition-group",
+                      {
+                        attrs: {
+                          tag: "ul",
+                          id: "storage-spaces",
+                          name: "listmove"
+                        }
+                      },
+                      _vm._l(_vm.storageSpacesAll, function(storage) {
+                        return _c(
+                          "li",
+                          {
+                            key: storage.storage_id,
+                            staticClass: "storage-space",
+                            class: { active: storage === _vm.activeStorage },
+                            attrs: { storage: storage },
+                            on: {
+                              click: function($event) {
+                                _vm.set_active_storage(storage)
+                              }
+                            }
+                          },
+                          [
+                            _c("strong", [
+                              _vm._v(
+                                _vm._s(storage.storage_prefix) +
+                                  _vm._s(storage.storage_number) +
+                                  ": " +
+                                  _vm._s(storage.storage_name)
+                              )
+                            ]),
+                            _vm._v(
+                              "\n                  " +
+                                _vm._s(storage.storage_description) +
+                                "\n              "
+                            )
+                          ]
+                        )
+                      })
+                    ),
+                    _vm._v(" "),
+                    _c("div", {
+                      staticClass: "btn sm plus align-right",
+                      on: { click: _vm.add_new_storage }
+                    }),
+                    _vm._v(" "),
+                    _c("div", {
+                      staticClass: "btn sm minus align-right",
+                      class: { inactive: !_vm.activeStorageSelected },
+                      on: { click: _vm.delete_storage }
+                    }),
+                    _vm._v(" "),
+                    _c("div", {
+                      staticClass: "btn sm pen align-right",
+                      class: { inactive: !_vm.activeStorageSelected },
+                      on: { click: _vm.edit_storage }
+                    })
+                  ],
+                  1
+                )
+              ]
+            )
+          ])
+        ])
+      : _vm._e()
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+var esExports = { render: render, staticRenderFns: staticRenderFns }
+/* harmony default export */ __webpack_exports__["a"] = (esExports);
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-44e9177c", esExports)
+  }
+}
+
+/***/ }),
+/* 85 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_storage_form_vue__ = __webpack_require__(86);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_10eff0a2_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_storage_form_vue__ = __webpack_require__(87);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -14804,29 +17530,22 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 71 */
+/* 86 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_vuex__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vue_constants_constants___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_vuex__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_simple_vue_validator__);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 //
 //
 //
@@ -14881,37 +17600,59 @@ if (false) {(function () {
 
 
 
+
+
+
+var Validator = __WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default.a.Validator;
+__WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_4_simple_vue_validator___default.a);
 
 /* harmony default export */ __webpack_exports__["a"] = ({
-  mixins: [__WEBPACK_IMPORTED_MODULE_0__vue_mixins_functions___default.a],
+  mixins: [__WEBPACK_IMPORTED_MODULE_1__vue_mixins_functions___default.a],
   data: function () {
     return {
-      alphabets: Object(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__["alphabets"])(),
-      numbers: Object(__WEBPACK_IMPORTED_MODULE_1__vue_constants_constants__["numbers"])()
+      alphabets: Object(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__["alphabets"])(),
+      numbers: Object(__WEBPACK_IMPORTED_MODULE_2__vue_constants_constants__["numbers"])()
     };
   },
-  computed: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapState"])({
+  computed: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapState"])({
     showStorageForm: state => state.form.storageFormShown,
-    storageSpacesAll: state => state.storageSpaces.all,
 
     storageId: state => state.storageSpaces.active.storage_id,
     storagePrefix: state => state.storageSpaces.active.storage_prefix,
     storageNumber: state => state.storageSpaces.active.storage_number,
-    storageName: state => state.storageSpaces.active.storage_name,
     storageDescription: state => state.storageSpaces.active.storage_description,
 
     activeStorage: state => state.storageSpaces.active,
     activeStorageSelected: state => !(state.storageSpaces.active.storage_id === 0)
-
+  }), {
+    storageName: {
+      get() {
+        return this.$store.state.storageSpaces.active.storage_name;
+      },
+      set(value) {
+        this.$store.commit('UPDATE_ACTIVE_STORAGE_NAME', value);
+      }
+    }
   }),
-  methods: Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["mapActions"])(['set_active_storage', 'add_new_storage', 'storage_submit', 'close_storage_form']),
-  created: function () {
-    this.add_new_storage();
-  }
+  validators: {
+    storageName: function (value) {
+      return Validator.value(value).required();
+    }
+  },
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_3_vuex__["mapActions"])(['save_storage', 'close_storage_form']), {
+    form_validate: function () {
+      var parent = this;
+      this.$validate().then(function (success) {
+        if (success) {
+          parent.save_storage(parent.formToString('storage-form'));
+        }
+      });
+    }
+  })
 });
 
 /***/ }),
-/* 72 */
+/* 87 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -14930,67 +17671,15 @@ var render = function() {
                 on: {
                   submit: function($event) {
                     $event.preventDefault()
-                    _vm.storage_submit(_vm.formToString("storage-form"))
+                    _vm.form_validate($event)
                   }
                 }
               },
               [
                 _c("div", { staticClass: "pure-u-5-5" }, [
                   _c("div", {
-                    staticClass: "btn-sm check align-right",
+                    staticClass: "btn back align-right",
                     on: { click: _vm.close_storage_form }
-                  })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "pure-u-5-5" }, [
-                  _c("label", { attrs: { for: "name" } }, [
-                    _vm._v("Storage Spaces")
-                  ]),
-                  _vm._v(" "),
-                  _c(
-                    "ul",
-                    { attrs: { id: "storage-spaces" } },
-                    _vm._l(_vm.storageSpacesAll, function(storage) {
-                      return _c(
-                        "li",
-                        {
-                          key: storage.storage_id,
-                          staticClass: "storage-space",
-                          class: { active: storage === _vm.activeStorage },
-                          attrs: { storage: storage },
-                          on: {
-                            click: function($event) {
-                              _vm.set_active_storage(storage)
-                            }
-                          }
-                        },
-                        [
-                          _c("strong", [
-                            _vm._v(
-                              _vm._s(storage.storage_prefix) +
-                                _vm._s(storage.storage_number) +
-                                ": " +
-                                _vm._s(storage.storage_name)
-                            )
-                          ]),
-                          _vm._v(
-                            "\n                  " +
-                              _vm._s(storage.storage_description) +
-                              "\n              "
-                          )
-                        ]
-                      )
-                    })
-                  ),
-                  _vm._v(" "),
-                  _c("div", {
-                    staticClass: "btn-sm plus align-right",
-                    on: { click: _vm.add_new_storage }
-                  }),
-                  _vm._v(" "),
-                  _c("div", {
-                    staticClass: "btn-sm minus align-right",
-                    class: { inactive: !_vm.activeStorageSelected }
                   })
                 ]),
                 _vm._v(" "),
@@ -15002,30 +17691,8 @@ var render = function() {
                   _c(
                     "select",
                     {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.storagePrefix,
-                          expression: "storagePrefix"
-                        }
-                      ],
                       attrs: { id: "prefix", name: "prefix" },
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.storagePrefix = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
+                      domProps: { value: _vm.storagePrefix }
                     },
                     _vm._l(_vm.alphabets, function(alphabet) {
                       return _c(
@@ -15047,30 +17714,8 @@ var render = function() {
                   _c(
                     "select",
                     {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.storageNumber,
-                          expression: "storageNumber"
-                        }
-                      ],
                       attrs: { id: "number", name: "number" },
-                      on: {
-                        change: function($event) {
-                          var $$selectedVal = Array.prototype.filter
-                            .call($event.target.options, function(o) {
-                              return o.selected
-                            })
-                            .map(function(o) {
-                              var val = "_value" in o ? o._value : o.value
-                              return val
-                            })
-                          _vm.storageNumber = $event.target.multiple
-                            ? $$selectedVal
-                            : $$selectedVal[0]
-                        }
-                      }
+                      domProps: { value: _vm.storageNumber }
                     },
                     _vm._l(_vm.numbers, function(number) {
                       return _c(
@@ -15099,13 +17744,34 @@ var render = function() {
                   }),
                   _vm._v(" "),
                   _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.storageName,
+                        expression: "storageName"
+                      }
+                    ],
+                    class: { error: _vm.validation.hasError("storageName") },
                     attrs: {
                       type: "text",
                       id: "storage_name",
                       name: "storage_name"
                     },
-                    domProps: { value: _vm.storageName }
+                    domProps: { value: _vm.storageName },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.storageName = $event.target.value
+                      }
+                    }
                   }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "message" }, [
+                    _vm._v(_vm._s(_vm.validation.firstError("storageName")))
+                  ]),
                   _vm._v(" "),
                   _c("label", { attrs: { for: "description" } }, [
                     _vm._v("Storage Description")
@@ -15114,24 +17780,8 @@ var render = function() {
                   _c(
                     "textarea",
                     {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.storageDescription,
-                          expression: "storageDescription"
-                        }
-                      ],
                       attrs: { id: "description", name: "description" },
-                      domProps: { value: _vm.storageDescription },
-                      on: {
-                        input: function($event) {
-                          if ($event.target.composing) {
-                            return
-                          }
-                          _vm.storageDescription = $event.target.value
-                        }
-                      }
+                      domProps: { value: _vm.storageDescription }
                     },
                     [_vm._v(_vm._s(_vm.storageDescription))]
                   )
@@ -15159,7 +17809,7 @@ if (false) {
 }
 
 /***/ }),
-/* 73 */
+/* 88 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15190,7 +17840,13 @@ var render = function() {
                     }
                   }
                 },
-                [_c("item-form"), _vm._v(" "), _c("storage-form")],
+                [
+                  _c("item-form"),
+                  _vm._v(" "),
+                  _c("storage-list"),
+                  _vm._v(" "),
+                  _c("storage-form")
+                ],
                 1
               )
             : _vm._e()
@@ -15212,12 +17868,12 @@ if (false) {
 }
 
 /***/ }),
-/* 74 */
+/* 89 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_bottom_widgets_vue__ = __webpack_require__(75);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7ab3b784_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_bottom_widgets_vue__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__babel_loader_node_modules_vue_loader_lib_selector_type_script_index_0_bustCache_bottom_widgets_vue__ = __webpack_require__(90);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__node_modules_vue_loader_lib_template_compiler_index_id_data_v_7ab3b784_hasScoped_false_buble_transforms_node_modules_vue_loader_lib_selector_type_template_index_0_bustCache_bottom_widgets_vue__ = __webpack_require__(91);
 var disposed = false
 var normalizeComponent = __webpack_require__(1)
 /* script */
@@ -15263,11 +17919,11 @@ if (false) {(function () {
 
 
 /***/ }),
-/* 75 */
+/* 90 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vuex__);
 //
 //
@@ -15286,7 +17942,7 @@ if (false) {(function () {
 });
 
 /***/ }),
-/* 76 */
+/* 91 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -15312,7 +17968,7 @@ if (false) {
 }
 
 /***/ }),
-/* 77 */
+/* 92 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";

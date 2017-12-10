@@ -4,7 +4,16 @@
 .fade-enter, .fade-leave-to {
   opacity: 0; }
 
-.fade-enter-to, .fadeIn-leave {
+.fade-enter-to, .fade-leave {
+  opacity: 1; }
+
+.fade-slow-enter-active, .fade-slow-leave-active {
+  transition: opacity 2s; }
+
+.fade-slow-enter, .fade-slow-leave-to {
+  opacity: 0; }
+
+.fade-slow-enter-to, .fade-slow-leave {
   opacity: 1; }
 
 .slideUp-enter-active, .slideUp-leave-active {
@@ -149,42 +158,40 @@ h2.header {
     text-transform: uppercase; }
 
 .btn {
-  border: 1px solid #ccc;
-  padding: 0.5%;
-  margin: 2px 	auto;
-  border-radius: 2px;
-  background: #fff;
-  background-repeat: no-repeat;
-  background-position: center left 10px;
-  cursor: pointer; }
-
-.btn-sm {
   display: inline-block;
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   background-size: auto 100%;
+  background-repeat: no-repeat;
   vertical-align: middle;
   background-image: url(/assets/images/icons.png);
   cursor: pointer; }
-  .btn-sm.pen {
+  .btn.sm {
+    width: 24px;
+    height: 24px; }
+  .btn.pen {
     background-position: 0 0; }
-  .btn-sm.cog {
-    background-position: -24px 0; }
-  .btn-sm.check {
-    background-position: -48px 0; }
-  .btn-sm.x {
-    background-position: -72px 0; }
-  .btn-sm.plus {
-    background-position: -96px 0; }
-  .btn-sm.minus {
-    background-position: -120px 0; }
-  .btn-sm.inactive {
+  .btn.cog {
+    background-position: 14.28571% 0; }
+  .btn.check {
+    background-position: 28.57143% 0; }
+  .btn.x {
+    background-position: 42.85714% 0; }
+  .btn.plus {
+    background-position: 57.14286% 0; }
+  .btn.minus {
+    background-position: 71.42857% 0; }
+  .btn.reload {
+    background-position: 85.71429% 0; }
+  .btn.back {
+    background-position: 100% 0; }
+  .btn.inactive {
     opacity: 0.5; }
 
 #prompt {
   position: fixed;
   border-bottom: 1px solid #ccc;
-  z-index: 9999;
+  z-index: 99999;
   padding: 1%;
   width: 100%;
   top: 0;
@@ -273,7 +280,7 @@ h2.header {
   display: inline-block;
   padding: 0;
   border-bottom: 1px solid #ccc;
-  transition: all 1s; }
+  transition: all 0.8s; }
 
 #search-result .photo {
   background-image: url(/assets/images/icon-photo.png);
@@ -310,6 +317,7 @@ h2.header {
 #item-add, #item-storage {
   position: absolute;
   width: 98%;
+  height: 96%;
   top: 1%;
   margin: 1%; }
   #item-add .box, #item-storage .box {
@@ -320,11 +328,16 @@ h2.header {
     font-size: 1.2em;
     padding: 0;
     margin-top: 10px; }
+  #item-add label.first, #item-storage label.first {
+    margin-top: 0; }
   #item-add input[type=text], #item-add textarea, #item-add select, #item-storage input[type=text], #item-storage textarea, #item-storage select {
     display: block;
     width: 100%;
     font-size: 1.2em;
     padding: 6px; }
+  #item-add input[type=text].error, #item-add textarea.error, #item-add select.error, #item-storage input[type=text].error, #item-storage textarea.error, #item-storage select.error {
+    border: 1px solid #c00;
+    background-color: #FFCCCC; }
   #item-add textarea, #item-storage textarea {
     border: 1px solid #ccc;
     height: 180px; }
@@ -338,6 +351,9 @@ h2.header {
     font-size: 1.2em;
     padding: 6px;
     margin: 20px 0 10px 0; }
+  #item-add .message, #item-storage .message {
+    font-size: 0.8em;
+    color: #c00; }
   #item-add .photo-preview, #item-storage .photo-preview {
     display: inline-block;
     width: 60px;
@@ -350,21 +366,25 @@ h2.header {
     width: 100%;
     padding: 10px 0 10px 50px;
     background-color: #CFC;
-    background-image: url(/assets/images/icon-photo.png); }
+    background-size: 28px 28px;
+    background-image: url(/assets/images/icon-photo.png);
+    background-repeat: no-repeat;
+    background-position: 8px 8px; }
   #item-add .btn-photo.loading, #item-storage .btn-photo.loading {
     background-image: url(/assets/images/icon-loader.gif); }
 
 #storage-spaces {
   border: 1px solid #ccc;
   padding: 0;
-  margin-bottom: 0;
-  height: 140px;
+  margin: 0;
+  height: 300px;
   overflow-y: scroll; }
 
 .storage-space {
   border-bottom: 1px solid #ccc;
   list-style-type: none;
   padding: 0.5%;
+  transition: all 0.8s;
   cursor: pointer; }
   .storage-space h2, .storage-space p {
     margin: 0; }
@@ -374,7 +394,7 @@ h2.header {
 
 .modal {
   position: fixed;
-  z-index: 99999;
+  z-index: 9999;
   top: 0;
   left: 0;
   width: 100%;

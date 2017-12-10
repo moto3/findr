@@ -4,7 +4,17 @@
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
-.fade-enter-to, .fadeIn-leave {
+.fade-enter-to, .fade-leave {
+  opacity: 1;
+}
+
+.fade-slow-enter-active, .fade-slow-leave-active {
+  transition: opacity 2s;
+}
+.fade-slow-enter, .fade-slow-leave-to {
+  opacity: 0;
+}
+.fade-slow-enter-to, .fade-slow-leave {
   opacity: 1;
 }
 
