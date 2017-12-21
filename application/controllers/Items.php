@@ -44,7 +44,7 @@ class Items extends CI_Controller {
       $data = array('item_id' => $item_id);
       $this->photos_model->update_batch($data, 'photoId', $photo_ids);
     }
-
+    echo_prompt(true, 'item.save_success');
 	}
 	public function image_upload()
 	{
@@ -96,6 +96,8 @@ class Items extends CI_Controller {
 	    $file->size = $data['file_size'];
 	    $output->files[] = $file;
     }
+    $output->success = true;
+    $output->message = 'item.image_uploaded';
     echo json_encode($output);
 	}
 

@@ -43,11 +43,10 @@ class Storage extends CI_Controller {
         }
         $this->storage_spaces_model->update($data, array('storage_id'=>$storage_id));
       }
-      $ret = array('success'=>true, 'message'=>'Storage saved successfully.');
+      echo_prompt(true, 'storage.save_success');
     }else{
-      $ret = array('success'=>false, 'message'=>'Duplicate storage exists.');
+      echo_prompt(false, 'storage.duplicate_exists');
     }
-    echo json_encode($ret);
 	}
   public function delete()
   {
@@ -55,16 +54,13 @@ class Storage extends CI_Controller {
     $data = $this->items_model->get(array('storage_id'=>$storage_id));
     $ret = array();
     if(!empty($data)){
-      $ret['success'] = false;
-      $ret['message'] = 'storage_not_empty';
+      echo_prompt(false, 'storage.not_empty');
     }else{
       if(!$this->storage_spaces_model->belongs_to_user($storage_id, user_id())){
         die();
       }
-      $ret['success'] = true;
-      $ret['message'] = 'storage_deleted';
       $this->storage_spaces_model->delete(array('storage_id'=>$storage_id));
+      echo_prompt(true, 'storage.delete_success');
     }
-    echo json_encode($ret);
   }
 }
