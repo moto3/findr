@@ -37,7 +37,7 @@ span.error {
 }
 .box {
 	width:100%;
-	border:1px solid #ccc;
+	border:1px solid #efefef;
 	border-radius: 4px;
 	padding:0;
 	margin:0;
@@ -133,14 +133,15 @@ $btn-num-icons: 7;
   }
 
 }
-
+#prompt-wrapper {
+  position: fixed;
+  width:100%;
+  top:0;
+  z-index:99999;
+}
 #prompt {
-	position: fixed;
-	border-bottom:1px solid #ccc;
-	z-index:99999;
+	border-bottom:1px solid #efefef;
 	padding:1%;
-	width:100%;
-	top:0;
 	background:#fff;
 	text-align:center;
 	font-weight:bold;
@@ -157,7 +158,7 @@ $btn-num-icons: 7;
 	width:400px;
 	margin: auto;
 	padding:20px;
-	border:1px solid #ccc;
+	border:1px solid #efefef;
 	-webkit-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
 	-moz-box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
 	box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.10);
@@ -238,7 +239,7 @@ $btn-num-icons: 7;
     width:100%;
     display: inline-block;
 		padding:0;
-		border-bottom:1px solid #ccc;
+		border-bottom:1px solid #efefef;
     transition: all 0.8s;
 	} 
 	.photo {
@@ -248,7 +249,7 @@ $btn-num-icons: 7;
 		background-size:cover;
 		background-color:#efefef;
 		float:left;
-		border-right:1px solid #ccc;
+		border-right:1px solid #efefef;
 	}
 	.photo:after {
 		display:block;

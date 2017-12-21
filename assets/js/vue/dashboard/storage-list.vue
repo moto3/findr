@@ -1,7 +1,7 @@
 <template>
   <transition v-bind:name="storageListTransition" >
     <div id="item-storage" class="pure-g" v-if="showStorageList">
-        <div class="box">
+      <div class="box">
               
           <div class="pure-u-5-5">
             <div class="btn back align-right" v-on:click="close_storage_list"></div>
@@ -20,7 +20,7 @@
             <div class="btn sm pen align-right" :class="{inactive: !activeStorageSelected}" v-on:click="edit_storage"></div>
           </div>
 
-        </div> 
+      </div> 
     </div>
   </transition>
 </template>

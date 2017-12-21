@@ -1,11 +1,12 @@
 import axios from 'axios'
+import translations from '../vue-translations/translations'
+import i18n from 'vue-i18n-mixin'
 
 // LOGIN
 export const check_login = ({ commit }) => {
   var self = this;
   axios.post('/users/login/check')
     .then(function (response) {
-      //console.log(response);
       commit('SET_LOGIN_STATUS', response.data);
     })
     .catch(function (error) {
@@ -15,11 +16,10 @@ export const check_login = ({ commit }) => {
 export const login = (store, input) => {
   axios.post('/users/login', input)
     .then(function (response) {
-      console.log(response);
       if(response.data){
-        var data = {message:'Login Success', error: false}
+        var data = {message:'login.success', success: true}
       }else{
-        var data = {message:'Login Failed', error: true}
+        var data = {message:'login.failed', success: false}
       }
       set_prompt(store, data);
       check_login(store);
@@ -31,10 +31,10 @@ export const login = (store, input) => {
 
 //PROMPT
 export const set_prompt = ({commit}, data) => {
-  if(data.error){
-    commit('SET_ERROR', data.message);
-  }else{
+  if(data.success){
     commit('SET_MESSAGE', data.message);
+  }else{
+    commit('SET_ERROR', data.message);
   }
   setTimeout(function(){
     commit('SET_MESSAGE', '');

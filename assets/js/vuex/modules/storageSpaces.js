@@ -39,8 +39,7 @@ const actions = {
             if(response.data.success){
               store.dispatch('load_storage', store); 
             }
-            var prompt_data = {message:response.data.message, error:!response.data.success}
-            store.dispatch('set_prompt', prompt_data);
+            store.dispatch('set_prompt', response.data);
           })
           .catch(function (error) {
             console.log(error);
@@ -52,13 +51,10 @@ const actions = {
     axios.post('/storage/save', input)
       .then(function (response) {
         if(response.data.success){
-          var prompt_data = {message:'Storage saved successfully.', error:false};
           store.dispatch('load_storage', store);
           store.dispatch('close_storage_form', store);
-        }else{
-          var prompt_data = {message:response.data.message, error:true};
         }
-        store.dispatch('set_prompt', prompt_data);
+        store.dispatch('set_prompt', response.data);
       })
       .catch(function (error) {
         console.log(error);

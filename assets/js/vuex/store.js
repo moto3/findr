@@ -9,6 +9,7 @@ import storageSpaces from './modules/storageSpaces'
 Vue.use(Vuex)
 
 const state = {
+  locale: 'ja',
   loggedInChecked: false,
   loggedIn: false,
   prompt: {

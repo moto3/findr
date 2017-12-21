@@ -15,7 +15,7 @@ const actions = {
           obj.active = true;
           return obj;
         });
-        console.log(response.data);
+        //console.log(response.data);
         store.commit('LOAD_ITEMS', response.data);
         store.dispatch('find_item_evoke');
       }
@@ -53,8 +53,7 @@ const actions = {
       photoPreview.fileName = response.data.files[0].fileName;
       photoPreview.thumbName = response.data.files[0].thumbName;
       store.commit('ADD_ACTIVE_ITEM_PHOTO', photoPreview);
-      var prompt_data = {message:'Image uploaded successfully.', error:false};
-      store.dispatch('set_prompt', prompt_data);
+      store.dispatch('set_prompt', response.data);
     })
     .catch(function (error) {
       console.log(error)
@@ -65,8 +64,7 @@ const actions = {
     .then(function (response) {
       store.dispatch('load_items', store);
       store.dispatch('close_form', store);
-      var prompt_data = {message:'Item saved successfully.', error:false};
-      store.dispatch('set_prompt', prompt_data);
+      store.dispatch('set_prompt', response.data);
     })
     .catch(function (error) {
       console.log(error);

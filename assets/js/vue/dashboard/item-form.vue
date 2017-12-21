@@ -62,7 +62,6 @@ export default {
       storageSpacesAll: state => state.storageSpaces.all,
       photoPreviews: state => state.items.active.photos,
       itemId: state => state.items.active.item_id,
-
       itemFormTransition: state => {
         if(state.form.form_mode == 'itemForm'){
           return 'slideUp'

@@ -32,7 +32,7 @@
                 <label for="name">Storage Name</label>
                 <input type="hidden" name="storage_id" :value="storageId">
                 <input type="text" id="storage_name" name="storage_name" v-model="storageName" :class="{error: validation.hasError('storageName')}" />
-              <div class="message">{{ validation.firstError('storageName') }}</div>
+                <div class="message">{{ validation.firstError('storageName') }}</div>
 
                 <label for="description">Storage Description</label>
                 <textarea id="description" name="description" :value="storageDescription">{{storageDescription}}</textarea>

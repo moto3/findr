@@ -1,6 +1,6 @@
 <template>
   <div id="bottom-widgets" v-if="loggedIn">
-	<div class="btn-add" v-on:click="add_new_item"></div>
+	  <div class="btn-add" v-on:click="add_new_item"></div>
   </div>
 </template>
 
