@@ -7,7 +7,7 @@
         </div>
         <div class="pure-u-5-5">
           <form id="upload-form">
-            <label class="btn-photo" id="lbl-fileupload" for="fileupload">Upload photos...</label>
+            <label class="btn-photo" id="lbl-fileupload" for="fileupload">{{this.translate('item.upload_photos')}}</label>
             <input id="fileupload" type="file" name="files" @change="upload_image" style="display:none;" />
           </form>
         </div>
@@ -17,7 +17,7 @@
             <input type="hidden" name="uploaded_files" :value="uploadedFiles" />
           </div>
           <div class="pure-u-5-5">
-            <label>Storage <div v-on:click="show_storage_list" class="btn sm cog"></div></label>
+            <label>{{this.translate('item.storage')}} <div v-on:click="show_storage_list" class="btn sm cog"></div></label>
           </div>
           <div class="pure-u-5-5">
             <select id="storage_id" name="storage_id" v-model="storage_id">
@@ -27,17 +27,17 @@
             </select>
           </div>
           <div class="pure-u-5-5">
-            <label for="name">Name</label>
+            <label for="name">{{this.translate('item.name')}}</label>
             <input type="hidden" id="item_id" name="item_id" v-bind:value="itemId" />
               <input type="text" id="name" name="name" v-model="itemName" :class="{error: validation.hasError('itemName')}" />
               <div class="message">{{ validation.firstError('itemName') }}</div>
           </div>
           <div class="pure-u-5-5">
-            <label for="description">Description</label>
+            <label for="description">{{this.translate('item.description')}}</label>
             <textarea id="description" name="description" v-model="itemDescription">{{itemDescription}}</textarea>
           </div>
           <div class="pure-u-5-5">
-            <input type="submit" value="SAVE" />
+            <input type="submit" :value="this.translate('common.save')" />
           </div>
         </form>
       </div>
@@ -47,6 +47,9 @@
 
 <script>
 import formToString from '../../vue-mixins/functions';
+import translations from '../../vue-translations/translations'
+import i18n from 'vue-i18n-mixin'
+
 import {numbers, alphabets} from '../../vue-constants/constants';
 import {mapGetters, mapState, mapActions} from 'vuex';
 import PhotoPreview from './photo-preview.vue';
@@ -55,9 +58,10 @@ import SimpleVueValidation from 'simple-vue-validator';
 var Validator = SimpleVueValidation.Validator;
 
 export default {
-  mixins: [ formToString ],
+  mixins: [ formToString, translations, i18n ],
   computed: {
     ...mapState({
+      locale: state => state.locale,
       showItemForm: state => state.form.itemFormShown,
       storageSpacesAll: state => state.storageSpaces.all,
       photoPreviews: state => state.items.active.photos,

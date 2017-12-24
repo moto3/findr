@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import {numbers, alphabets} from '../../vue-constants/constants';
 import {mapState, mapActions} from 'vuex';
 import ItemForm from './item-form.vue';
 import StorageList from './storage-list.vue';
@@ -21,12 +20,6 @@ export default {
 	computed: mapState({
 		showForm: state => state.form.shown,
 	}),
-	data: function(){
-		return {
-			alphabets: alphabets(),
-			numbers: numbers()
-		}
-	},
 	methods: 
 		mapActions([
 			'show_item_form',

@@ -1,9 +1,7 @@
 <template>
   <div id="dashboard" v-if="loggedIn">
     <div id="no-result" class="splash-container" v-if="!hasItems">
-      <div class="splash">
-        &mdash; No Results &mdash;
-      </div>
+      <div class="splash">&mdash; {{this.translate('dashboard.no_results')}} &mdash;</div>
     </div>
     <div id="search-result" v-if="hasItems">
       <items></items>
@@ -12,13 +10,17 @@
 </template>
 
 <script>
+import translations from '../vue-translations/translations'
+import i18n from 'vue-i18n-mixin'
 import {mapState} from 'vuex';
 import Items from './dashboard/items.vue';
 
 export default {
+  mixins: [ i18n, translations ],
   computed: mapState({
     loggedIn: state => state.loggedIn,
-    hasItems: state => state.items.all.length
+    hasItems: state => state.items.all.length,
+    locale: state => state.locale  
   }),
   components :{
     Items

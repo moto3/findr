@@ -11,7 +11,7 @@
       loggedIn: state => state.loggedIn
     }),
     methods: mapActions([
-      'add_new_item', //maps `this.add_new_item()` to `this.$store.dispatch('add_new_item')`
+      'add_new_item', //this.$store.dispatch('add_new_item')
     ])
   }
 </script>

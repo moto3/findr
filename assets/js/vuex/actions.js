@@ -87,16 +87,25 @@ export const set_form_mode = ({commit}, mode) => {
   commit('SET_FORM_MODE', mode);
 }
 export const show_item_form = (store) => {
-  set_form_mode(store,'itemForm');
-  setTimeout(function(){
-    store.commit('SET_ITEM_FORM_SHOWN', true);
-  })
+  if(!store.state.storageSpaces.all.length){
+    store.commit('ADD_STORAGE');
+    show_storage_form(store);
+    set_prompt(store, {message:'storage.please_create_one', success: true});
+  }else{
+    set_form_mode(store,'itemForm');
+    setTimeout(function(){
+     store.commit('SET_ITEM_FORM_SHOWN', true);
+     store.commit('SET_STORAGE_LIST_SHOWN', false);
+    store.commit('SET_STORAGE_FORM_SHOWN', false);
+    });
+  }
 }
 export const show_storage_list = (store) => {
   set_form_mode(store,'storageList');
   setTimeout(function(){
     store.commit('SET_ITEM_FORM_SHOWN', false);
     store.commit('SET_STORAGE_LIST_SHOWN', true);
+    store.commit('SET_STORAGE_FORM_SHOWN', false);
   })
 }
 export const close_storage_list = (store) => {
@@ -104,16 +113,19 @@ export const close_storage_list = (store) => {
   setTimeout(function(){
     store.commit('SET_ITEM_FORM_SHOWN', true);
     store.commit('SET_STORAGE_LIST_SHOWN', false);
+    store.commit('SET_STORAGE_FORM_SHOWN', false);
   })
 }
 export const show_storage_form = (store) => {
   set_form_mode(store,'storageForm');
   setTimeout(function(){
+    store.commit('SET_ITEM_FORM_SHOWN', false);
     store.commit('SET_STORAGE_LIST_SHOWN', false);
     store.commit('SET_STORAGE_FORM_SHOWN', true);
   });
 }
 export const close_storage_form = ({commit}) => {
+  commit('SET_ITEM_FORM_SHOWN', false);
   commit('SET_STORAGE_LIST_SHOWN', true);
   commit('SET_STORAGE_FORM_SHOWN', false);
 }

@@ -8,7 +8,7 @@
           </div>
 
           <div class="pure-u-5-5">
-            <label for="name" class="first">Storage Spaces</label>
+            <label for="name" class="first">{{this.translate('storage.storage_spaces')}}</label>
             <transition-group tag="ul" id="storage-spaces" name="listmove">
               <li class="storage-space" v-for="storage in storageSpacesAll" v-bind:storage="storage" v-bind:key="storage.storage_id" @click="set_active_storage(storage)" :class="{active: storage === activeStorage}" >
                     <strong>{{storage.storage_prefix}}{{storage.storage_number}}: {{storage.storage_name}}</strong>
@@ -26,18 +26,14 @@
 </template>
 
 <script>
-import formToString from '../../vue-mixins/functions';
-import {numbers, alphabets} from '../../vue-constants/constants';
+import translations from '../../vue-translations/translations'
+import i18n from 'vue-i18n-mixin'
 import {mapState, mapActions} from 'vuex';
 
 export default {
-  data: function(){
-    return {
-      alphabets: alphabets(),
-      numbers: numbers()
-    }
-  },
+  mixins: [ translations, i18n ],
   computed: mapState({
+    locale: state => state.locale,
     showStorageList: state => state.form.storageListShown,
     storageSpacesAll: state => state.storageSpaces.all,
     activeStorage: state => state.storageSpaces.active,

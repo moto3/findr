@@ -7,7 +7,7 @@ const state = {
 
 const actions = {
   load_storage({commit}) {
-    axios.post('/storage/load')
+    const request = axios.post('/storage/load')
     .then(function (response) {
       if(response.data.length > 0){
         commit('LOAD_STORAGE', response.data);
@@ -16,6 +16,7 @@ const actions = {
     .catch(function (error) {
       console.log(error);
     });
+    return request;
   },
   set_active_storage (store, storage) {
     store.commit('SET_ACTIVE_STORAGE', storage);
@@ -33,7 +34,7 @@ const actions = {
     if(store.state.active.storage_id){
       var r = confirm("Are you sure?");
       if (r == true) {
-        var input = 'storage_id=' + store.state.active.storage_id;
+        const input = 'storage_id=' + store.state.active.storage_id;
         axios.post('/storage/delete', input)
           .then(function (response) {
             if(response.data.success){
@@ -51,8 +52,22 @@ const actions = {
     axios.post('/storage/save', input)
       .then(function (response) {
         if(response.data.success){
-          store.dispatch('load_storage', store);
-          store.dispatch('close_storage_form', store);
+          store.dispatch('load_storage', store)
+            .then(
+              result => {
+                console.log('storage save success from axios promise')
+                if(store.state.all.length > 1){
+                  store.dispatch('close_storage_form', store);
+                }else{
+                  //TODO COMBINE WITH ITEM ADD
+                  var storage_id_default = 0;
+                  if(store.rootState.storageSpaces.all.length){
+                    storage_id_default = store.rootState.storageSpaces.all[0].storage_id;
+                  }
+                  store.commit('ADD_ITEM', storage_id_default);
+                  store.dispatch('show_item_form', store);
+                }    
+            });
         }
         store.dispatch('set_prompt', response.data);
       })

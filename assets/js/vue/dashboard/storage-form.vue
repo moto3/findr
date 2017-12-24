@@ -9,7 +9,7 @@
               </div>
 
               <div class="pure-u-5-5">
-                <label>Storage Identifier</label>
+                <label>{{this.translate('storage.storage_identifier')}}</label>
               </div>
 
               <div class="pure-u-1-5">
@@ -29,17 +29,17 @@
               </div>
               
               <div class="pure-u-5-5">
-                <label for="name">Storage Name</label>
+                <label for="name">{{this.translate('storage.storage_name')}}</label>
                 <input type="hidden" name="storage_id" :value="storageId">
                 <input type="text" id="storage_name" name="storage_name" v-model="storageName" :class="{error: validation.hasError('storageName')}" />
                 <div class="message">{{ validation.firstError('storageName') }}</div>
 
-                <label for="description">Storage Description</label>
+                <label for="description">{{this.translate('storage.storage_description')}}</label>
                 <textarea id="description" name="description" :value="storageDescription">{{storageDescription}}</textarea>
               </div>
               
               <div class="pure-u-5-5">
-                <input type="submit" value="SAVE" />
+                <input type="submit" :value="this.translate('common.save')" />
               </div>
 
           </form>
@@ -50,6 +50,9 @@
 
 <script>
 import formToString from '../../vue-mixins/functions';
+import translations from '../../vue-translations/translations'
+import i18n from 'vue-i18n-mixin'
+
 import {numbers, alphabets} from '../../vue-constants/constants';
 import {mapState, mapActions} from 'vuex';
 
@@ -57,7 +60,7 @@ import SimpleVueValidation from 'simple-vue-validator';
 var Validator = SimpleVueValidation.Validator;
 
 export default {
-  mixins: [ formToString ],
+  mixins: [ formToString, i18n, translations ],
   data: function(){
     return {
       alphabets: alphabets(),
@@ -66,10 +69,10 @@ export default {
   },
   computed: {
     ...mapState({
+      locale: state => state.locale,
       showStorageForm: state => state.form.storageFormShown,
 
       storageId: state => state.storageSpaces.active.storage_id,
-      
       
       storageDescription: state => state.storageSpaces.active.storage_description,
 

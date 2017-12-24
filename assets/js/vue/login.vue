@@ -10,7 +10,7 @@
             <input type="email" name="email" id="email" v-model="email" placeholder="email@findr.com" />
             <label for="password">{{this.translate('login.password')}}</label>
             <input type="password" name="password" id="password" v-model="password" placeholder="password" />
-            <input type="submit" value="Log In" />
+            <input type="submit" :value="this.translate('login.login')" />
           </form>
         </div>
       </transition>

@@ -28,6 +28,7 @@ const actions = {
     commit('REMOVE_ONE');
   },
   add_new_item (store) {
+    //TODO COMBINE BELOW WITH STORAGE SAVE
     var storage_id_default = 0;
     if(store.rootState.storageSpaces.all.length){
       storage_id_default = store.rootState.storageSpaces.all[0].storage_id;
