@@ -297,7 +297,7 @@ h2.header {
 #search-result .photo:after {
   display: block;
   content: '';
-  padding-top: 70%; }
+  padding-top: 74%; }
 
 #search-result .content, #search-result .label {
   padding: 1%; }
