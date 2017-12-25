@@ -5,7 +5,8 @@
           <form id="storage-form" v-on:submit.prevent="form_validate">
 
               <div class="pure-u-5-5">
-                <div class="btn back align-right" v-on:click="close_storage_form"></div>
+                <div class="btn back align-right" v-on:click="close_storage_form" v-if="!storageEmpty"></div>
+                <div class="btn x align-right" v-on:click="close_form" v-if="storageEmpty"></div>
               </div>
 
               <div class="pure-u-5-5">
@@ -76,6 +77,8 @@ export default {
       
       storageDescription: state => state.storageSpaces.active.storage_description,
 
+      storageEmpty: state => state.storageSpaces.all.length === 0,
+
       activeStorage: state => state.storageSpaces.active,
       activeStorageSelected: state => !(state.storageSpaces.active.storage_id === 0)
     }),
@@ -112,7 +115,8 @@ export default {
   methods: {
     ...mapActions([
       'save_storage',
-      'close_storage_form'
+      'close_storage_form',
+      'close_form'
     ]),
     form_validate: function(){
       var parent = this;

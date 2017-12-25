@@ -7,7 +7,7 @@ class Items extends CI_Controller {
 	{
 		parent::__construct();
 		if(!is_logged_in()){
-			redirect('/users/login');
+			die();
 		}
 	}
 	public function index(){}

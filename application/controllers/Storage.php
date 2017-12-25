@@ -7,13 +7,13 @@ class Storage extends CI_Controller {
 	{
 		parent::__construct();
 		if(!is_logged_in()){
-			redirect('/users/login');
+			die();
 		}
 	}
 	public function index(){}
 	public function load()
 	{	
-		$data = $this->storage_spaces_model->get_all(array(), "*", 0, "storage_prefix ASC, storage_number ASC");
+		$data = $this->storage_spaces_model->get_all(array('user_id'=>user_id()), "*", 0, "storage_prefix ASC, storage_number ASC");
     echo json_encode($data);
 	}
 	public function save()
@@ -22,7 +22,8 @@ class Storage extends CI_Controller {
     $data = $this->storage_spaces_model->get(
       array(
         'storage_prefix' => $this->input->post('prefix'),
-        'storage_number' => $this->input->post('number')
+        'storage_number' => $this->input->post('number'),
+        'user_id' => user_id()
       )
     );
     if(empty($data)){

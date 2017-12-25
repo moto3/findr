@@ -17807,6 +17807,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -17833,6 +17834,8 @@ var Validator = __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default.a.Val
     storageId: state => state.storageSpaces.active.storage_id,
 
     storageDescription: state => state.storageSpaces.active.storage_description,
+
+    storageEmpty: state => state.storageSpaces.all.length === 0,
 
     activeStorage: state => state.storageSpaces.active,
     activeStorageSelected: state => !(state.storageSpaces.active.storage_id === 0)
@@ -17867,7 +17870,7 @@ var Validator = __WEBPACK_IMPORTED_MODULE_5_simple_vue_validator___default.a.Val
       return Validator.value(value).required();
     }
   },
-  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_4_vuex__["mapActions"])(['save_storage', 'close_storage_form']), {
+  methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_4_vuex__["mapActions"])(['save_storage', 'close_storage_form', 'close_form']), {
     form_validate: function () {
       var parent = this;
       this.$validate().then(function (success) {
@@ -17905,10 +17908,19 @@ var render = function() {
               },
               [
                 _c("div", { staticClass: "pure-u-5-5" }, [
-                  _c("div", {
-                    staticClass: "btn back align-right",
-                    on: { click: _vm.close_storage_form }
-                  })
+                  !_vm.storageEmpty
+                    ? _c("div", {
+                        staticClass: "btn back align-right",
+                        on: { click: _vm.close_storage_form }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.storageEmpty
+                    ? _c("div", {
+                        staticClass: "btn x align-right",
+                        on: { click: _vm.close_form }
+                      })
+                    : _vm._e()
                 ]),
                 _vm._v(" "),
                 _c("div", { staticClass: "pure-u-5-5" }, [

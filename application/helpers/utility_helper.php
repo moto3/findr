@@ -35,7 +35,6 @@ function format_state($str){
 	return array_search($str, $states);
 }
 
-
 function lipsum($sentences = 1, $paragraph = 1){
 	$lipsum_text = array('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur imperdiet tempor consectetur. Vestibulum aliquam ex quis ex dapibus maximus. Quisque mi dolor, pretium egestas egestas nec, finibus non urna. Donec ut elit consectetur, rutrum justo eget, pulvinar purus. Morbi rhoncus turpis nec arcu ultricies elementum. Donec euismod aliquam nibh ac convallis. Quisque laoreet, tellus vitae iaculis blandit, leo lacus commodo odio, ut rhoncus neque quam a sem. Nullam mi urna, finibus ut nibh quis, varius varius nulla. Nam mi metus, molestie nec lorem non, vulputate aliquam nulla. Vestibulum enim metus, faucibus at mi nec, congue sagittis sem. Sed eu dignissim lacus, a consectetur felis. Ut laoreet purus id bibendum bibendum.',
 	'Pellentesque eu elit a purus dignissim mattis. Duis pellentesque tortor quam, ut pulvinar nulla feugiat quis. Etiam suscipit volutpat velit, ut rutrum orci interdum eget. Morbi placerat ante nec nibh feugiat, nec convallis eros ultricies. Sed a ipsum non mi bibendum dictum. Cras iaculis viverra massa, viverra varius orci auctor aliquam. Phasellus elit massa, aliquet a luctus et, iaculis vitae est. Curabitur risus nunc, condimentum vel egestas eget, blandit eget magna. Vivamus nec nisi lectus. Fusce nec efficitur nulla.',
