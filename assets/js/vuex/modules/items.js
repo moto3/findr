@@ -21,7 +21,8 @@ const actions = {
       }
     })
     .catch(function (error) {
-      console.log(error);
+      alert(error);
+      //console.log(error);
     });
   },
   remove_one ({commit}) {
@@ -57,7 +58,8 @@ const actions = {
       store.dispatch('set_prompt', response.data);
     })
     .catch(function (error) {
-      console.log(error)
+      alert(error)
+      //console.log(error)
     });
   },
   item_form_submit (store, input) {
@@ -68,7 +70,8 @@ const actions = {
       store.dispatch('set_prompt', response.data);
     })
     .catch(function (error) {
-      console.log(error);
+      alert(error)
+      //console.log(error);
     });
   }
 }

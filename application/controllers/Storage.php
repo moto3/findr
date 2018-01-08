@@ -19,34 +19,35 @@ class Storage extends CI_Controller {
 	public function save()
 	{
     $storage_id = $this->input->post('storage_id');
-      $save_data = array(
-        'storage_prefix' => $this->input->post('prefix'),
-        'storage_number' => $this->input->post('number'),
-        'storage_name' => $this->input->post('storage_name'),
-        'storage_description' => $this->input->post('description'),
-        'date_last_access' => date('Y-m-d H:i:s')
-      );
-      if($storage_id == 0){
-        $search_data = $this->storage_spaces_model->get(
-        array(
-            'storage_prefix' => $this->input->post('prefix'),
-            'storage_number' => $this->input->post('number'),
-            'user_id' => user_id()
-          )
-        );
-        if(empty($search_data)){
-          echo_prompt(false, 'storage.duplicate_exists');
-        }
-        $save_data['date_created'] = date('Y-m-d H:i:s');
-        $save_data['user_id'] = user_id();
-        $storage_id = $this->storage_spaces_model->insert($save_data);
-      }else{
-        if(!$this->storage_spaces_model->belongs_to_user($storage_id, user_id())){
-          die();
-        }
-        $this->storage_spaces_model->update($save_data, array('storage_id'=>$storage_id));
+    $search_data = array(
+      'storage_prefix' => $this->input->post('prefix'),
+      'storage_number' => $this->input->post('number'),
+      'user_id' => user_id(),
+      'storage_id <> ' => $storage_id 
+    );
+    if(!empty($this->storage_spaces_model->get($search_data))){
+      echo_prompt(false, 'storage.duplicate_exists');
+      die();
+    }
+
+    $save_data = array(
+      'storage_prefix' => $this->input->post('prefix'),
+      'storage_number' => $this->input->post('number'),
+      'storage_name' => $this->input->post('storage_name'),
+      'storage_description' => $this->input->post('description'),
+      'date_last_access' => date('Y-m-d H:i:s')
+    );        
+    if($storage_id != 0){
+      if(!$this->storage_spaces_model->belongs_to_user($storage_id, user_id())){
+        die();
       }
-      echo_prompt(true, 'storage.save_success');
+      $this->storage_spaces_model->update($save_data, array('storage_id'=>$storage_id));
+    }else{
+      $save_data['date_created'] = date('Y-m-d H:i:s');
+      $save_data['user_id'] = user_id();
+      $storage_id = $this->storage_spaces_model->insert($save_data);
+    }
+    echo_prompt(true, 'storage.save_success');
 	}
   public function delete()
   {

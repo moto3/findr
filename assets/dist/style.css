@@ -324,7 +324,8 @@ h2.header {
   top: 1%;
   margin: 1%; }
   #item-add .box, #item-storage .box {
-    padding: 0.5%; }
+    padding: 0.5%;
+    overflow-y: scroll; }
   #item-add label, #item-storage label {
     display: block;
     width: 100%;

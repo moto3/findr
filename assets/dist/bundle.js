@@ -15173,7 +15173,8 @@ var actions = {
         store.dispatch('find_item_evoke');
       }
     }).catch(function (error) {
-      console.log(error);
+      alert(error);
+      //console.log(error);
     });
   },
   remove_one: function remove_one(_ref) {
@@ -15209,7 +15210,8 @@ var actions = {
       store.commit('ADD_ACTIVE_ITEM_PHOTO', photoPreview);
       store.dispatch('set_prompt', response.data);
     }).catch(function (error) {
-      console.log(error);
+      alert(error);
+      //console.log(error)
     });
   },
   item_form_submit: function item_form_submit(store, input) {
@@ -15218,7 +15220,8 @@ var actions = {
       store.dispatch('close_form', store);
       store.dispatch('set_prompt', response.data);
     }).catch(function (error) {
-      console.log(error);
+      alert(error);
+      //console.log(error);
     });
   }
 };
@@ -15308,7 +15311,8 @@ var actions = {
         commit('LOAD_STORAGE', response.data);
       }
     }).catch(function (error) {
-      console.log(error);
+      alert(error);
+      //console.log(error)
     });
     return request;
   },
@@ -15335,7 +15339,8 @@ var actions = {
           }
           store.dispatch('set_prompt', response.data);
         }).catch(function (error) {
-          console.log(error);
+          alert(error);
+          //console.log(error)
         });
       }
     }
@@ -15360,7 +15365,8 @@ var actions = {
       }
       store.dispatch('set_prompt', response.data);
     }).catch(function (error) {
-      console.log(error);
+      alert(error);
+      //console.log(error);
     });
   }
 };

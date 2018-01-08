@@ -14,7 +14,8 @@ const actions = {
       }
     })
     .catch(function (error) {
-      console.log(error);
+      alert(error)
+      //console.log(error)
     });
     return request;
   },
@@ -43,7 +44,8 @@ const actions = {
             store.dispatch('set_prompt', response.data);
           })
           .catch(function (error) {
-            console.log(error);
+            alert(error)
+            //console.log(error)
           });
       }
     }
@@ -72,7 +74,8 @@ const actions = {
         store.dispatch('set_prompt', response.data);
       })
       .catch(function (error) {
-        console.log(error);
+        alert(error)
+        //console.log(error);
       });
   }
 }
